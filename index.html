@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSB Brother Trading Pvt. Ltd. | Ultimate Masterpiece</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#050b14', neonCyan: '#00f2fe', neonBlue: '#4facfe',
+                        gold: '#fdbb2d', ssbRed: '#ff5e62', silverMix: '#bdc3c7',
+                        leafGreen: '#22c55e', sunsetOrange: '#f97316',
+                        ssbGreen: '#22c55e', 
+                        ssbBlue: '#3b82f6'   
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        body { margin: 0; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; font-family: 'Inter', sans-serif; }
+        html.dark body { background-color: #050b14; color: white; }
+        html:not(.dark) body { background-color: #f8fafc; color: #0f172a; }
+        ::-webkit-scrollbar { width: 8px; }
+        html.dark ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+        html:not(.dark) ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* PRELOADER */
+        #preloader { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .geo-box { width: 50px; height: 50px; background: white; position: absolute; opacity: 0; }
+        .liquid-sphere { width: 100px; height: 100px; background: radial-gradient(circle at 30% 30%, #3b82f6, #000); border-radius: 50%; position: absolute; opacity: 0; animation: pulseLiquid 2s infinite alternate; }
+        @keyframes pulseLiquid { 0% { transform: scale(1); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } 100% { transform: scale(1.1); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; } }
+        .light-trail { position: absolute; width: 150px; height: 4px; border-radius: 50%; background: linear-gradient(90deg, transparent, #3b82f6, #fff); box-shadow: 0 0 20px #3b82f6; opacity: 0; }
+        .trail-left { left: -200px; top: 50%; transform: rotate(15deg); }
+        .trail-right { right: -200px; top: 50%; transform: rotate(-165deg); }
+        .shockwave { position: absolute; width: 10px; height: 10px; border: 4px solid #fff; border-radius: 50%; opacity: 0; box-shadow: 0 0 50px #3b82f6, inset 0 0 50px #3b82f6; }
+        .final-logo { opacity: 0; transform: scale(0.5); text-align: center; }
+
+        /* NAV & HERO */
+        #main-content { opacity: 0; display: none; }
+        .glass-nav { backdrop-filter: blur(20px); transition: all 0.5s; z-index: 1000; }
+        html.dark .glass-nav { background: rgba(5, 11, 20, 0.85); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        html:not(.dark) .glass-nav { background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .typewriter-cursor { border-right: 3px solid #3b82f6; animation: blink 0.7s infinite; padding-right: 5px;}
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        .hero-wrapper { position: relative; width: 100vw; min-height: 100vh; overflow: hidden; perspective: 1000px; display: flex; align-items: center;}
+        .interactive-grid { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background-size: 60px 60px; transform: rotateX(60deg) translateY(-100px) translateZ(-200px); transform-origin: center center; transition: transform 0.1s ease-out; }
+        html.dark .interactive-grid { background-image: linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.15) 1px, transparent 1px); }
+        html:not(.dark) .interactive-grid { background-image: linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px); }
+        .floating-bag { animation: float3D 6s ease-in-out infinite; filter: drop-shadow(0 30px 40px rgba(0,0,0,0.6)); }
+        @keyframes float3D { 0% { transform: translateY(0px); } 50% { transform: translateY(-25px); } 100% { transform: translateY(0px); } }
+        .glow-btn { position: relative; background: linear-gradient(45deg, #3b82f6, #22c55e); color: white; border: none; transition: all 0.3s; z-index: 50; cursor: pointer; }
+        .glow-btn:hover { box-shadow: 0 0 25px rgba(59, 130, 246, 0.6); transform: scale(1.05); }
+
+        /* 3D FLIP CARDS */
+        .flip-wrapper { perspective: 1500px; width: 100%; position: relative; z-index: 10; cursor: pointer; }
+        .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+        @media (min-width: 768px) { .flip-wrapper:hover .flip-inner { transform: rotateY(180deg); z-index: 50; } }
+        .flip-wrapper.active .flip-inner { transform: rotateY(180deg); z-index: 50; }
+        .flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 1.5rem; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; transform-style: preserve-3d; }
+        .flip-back { transform: rotateY(180deg); align-items: center; justify-content: center; text-align: center; z-index: 20; }
+        html.dark .flip-front { background: radial-gradient(circle at top left, rgba(255,255,255,0.08), rgba(0,0,0,0.8)); border: 1px solid rgba(255,255,255,0.1); box-shadow: -10px 10px 20px rgba(0,0,0,0.8); }
+        html.dark .flip-back { background: radial-gradient(circle at top right, rgba(59,130,246,0.2), rgba(0,0,0,0.9)); border: 1px solid #3b82f6; box-shadow: 0 0 30px rgba(59,130,246,0.3); }
+        html:not(.dark) .flip-front { background: #ffffff; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        html:not(.dark) .flip-back { background: #f0f9ff; border: 1px solid #3b82f6; box-shadow: 0 10px 25px rgba(59,130,246,0.3); }
+        .bg-giant-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(-10px); font-size: 5rem; font-weight: 900; white-space: nowrap; pointer-events: none; transition: all 0.5s ease; }
+        html.dark .bg-giant-text { color: rgba(255,255,255,0.03); }
+        html:not(.dark) .bg-giant-text { color: rgba(0,0,0,0.03); }
+        .product-3d-img { position: absolute; top: 10%; left: 50%; transform: translateX(-50%) translateZ(40px); height: 50%; object-fit: contain; transition: transform 0.6s ease; filter: drop-shadow(0 20px 20px rgba(0,0,0,0.5));}
+
+        /* MODALS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .modal-content { width: 100%; height: 100%; position: relative; overflow-y: auto; overflow-x: hidden; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; color: #fff; cursor: pointer; transition: all 0.3s; z-index: 100005; background: rgba(0,0,0,0.3); width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+        .close-btn:hover { background: #ff5e62; }
+        
+        /* GALAXY CSS */
+        #galaxy-intro-overlay { position: absolute; inset: 0; background: #000; z-index: 100001; display: flex; justify-content: center; align-items: center; overflow: hidden; transition: opacity 0.8s ease; perspective: 1000px; }
+        .hyperspace { position: absolute; width: 200vw; height: 200vh; background: radial-gradient(circle at center, transparent 20%, #3b82f6 40%, #22c55e 60%, #000 80%); background-size: 10% 10%; opacity: 0; animation: warpDrive 3s cubic-bezier(0.5, 0, 0.2, 1) forwards; }
+        @keyframes warpDrive { 0% { transform: scale(0.1) rotate(0deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(15) rotate(180deg); opacity: 0; filter: blur(10px); } }
+
+        /* QTY BUTTONS & SIZES */
+        .qty-btn { width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; background: #e5e7eb; color: #374151; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+        .qty-btn:hover { background: #d1d5db; }
+        html.dark .qty-btn { background: #374151; color: white; }
+        html.dark .qty-btn:hover { background: #4b5563; }
+        .size-box { border: 1px solid #d1d5db; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .size-box.active { border-color: #3b82f6; color: #3b82f6; font-weight: bold; position: relative; } 
+        .size-box.active::after { content: '✓'; position: absolute; bottom: -1px; right: 0; font-size: 10px; background: #3b82f6; color: white; width: 14px; height: 14px; display: flex; justify-content: center; align-items: center; }
+
+        html.dark .text-dynamic { color: white; } html:not(.dark) .text-dynamic { color: #0f172a; }
+        html.dark .text-dynamic-sub { color: #9ca3af; } html:not(.dark) .text-dynamic-sub { color: #475569; }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="geo-box" id="geo-box"></div>
+        <div class="liquid-sphere" id="liquid-sphere"></div>
+        <div class="light-trail trail-left" id="trail-left"></div>
+        <div class="light-trail trail-right" id="trail-right"></div>
+        <div class="shockwave" id="shockwave"></div>
+        <div class="final-logo" id="final-logo">
+            <h1 class="text-4xl md:text-6xl font-black text-white tracking-widest uppercase"><span class="text-transparent bg-clip-text bg-gradient-to-r from-ssbBlue to-ssbGreen">SSB</span> Brother</h1>
+            <p class="text-silverMix tracking-[0.5em] text-xs md:text-sm mt-2 font-bold">TRADING PVT. LTD.</p>
+        </div>
+    </div>
+
+    <div id="floating-cart" class="fixed bottom-6 right-6 z-[99999] bg-ssbBlue text-white p-4 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.6)] cursor-pointer hover:scale-110 transition-transform hidden" onclick="openCartModal()">
+        <i class="fas fa-shopping-cart text-2xl"></i>
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-ssbGreen text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-white">0</span>
+    </div>
+
+    <div id="main-content">
+        <nav class="fixed w-full top-0 glass-nav">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-ssbBlue to-ssbGreen rounded-full flex items-center justify-center border border-white/20"><span class="font-black text-white text-xl">SSB</span></div>
+                    
+                    <span id="typewriter-text" class="text-lg md:text-2xl font-black tracking-tight text-white uppercase typewriter-cursor"></span>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <button id="btn-lang" class="w-10 h-10 rounded-full border border-gray-500/50 flex items-center justify-center font-black text-xs text-dynamic hover:border-ssbBlue transition-all bg-black/5 dark:bg-white/5">EN</button>
+                    <button id="btn-theme" class="w-10 h-10 rounded-full border border-gray-500/50 flex items-center justify-center text-dynamic hover:border-ssbBlue transition-all bg-black/5 dark:bg-white/5">
+                        <i id="icon-theme" class="fas fa-sun text-yellow-500"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="hero-wrapper" id="home">
+            <div class="interactive-grid"></div>
+            <div class="absolute inset-0 dark:bg-[radial-gradient(ellipse_at_center,transparent_0%,#050b14_70%)] bg-[radial-gradient(ellipse_at_center,transparent_0%,#f8fafc_70%)] pointer-events-none z-0"></div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-4 h-full flex flex-col md:flex-row items-center justify-between pt-24 md:pt-0">
+                <div class="w-full md:w-1/2 text-center md:text-left">
+                    <h1 class="text-5xl md:text-7xl font-black text-dynamic mb-6">We to<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-ssbBlue to-ssbGreen">You</span> - Store to Door</h1>
+                    <p class="text-dynamic-sub text-lg mb-8 max-w-lg">Your required we have solution for you. If found buy now, if not tell us we add for you.</p>
+                    
+                    <button onclick="openSurpriseModal()" class="glow-btn px-8 py-4 rounded-full text-lg tracking-wide font-black">
+                        <i class="fas fa-bolt mr-2"></i> Enter Galaxy Warp
+                    </button>
+                </div>
+                <div class="w-full md:w-1/2 h-[40vh] md:h-[80vh] flex justify-center items-center relative mt-10 md:mt-0">
+                    <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Shopping%20bags/3D/shopping_bags_3d.png" alt="3D Bag" class="w-[70%] max-w-[400px] object-contain floating-bag z-10">
+                    <div class="absolute w-64 h-64 bg-ssbBlue rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-pulse"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 relative z-10 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-transparent transition-colors duration-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-10">
+                <div class="w-full md:w-1/2 text-center md:text-left">
+                    <h2 class="text-4xl md:text-5xl font-black text-dynamic tracking-tight mb-4">Product <span class="text-ssbBlue">View</span></h2>
+                    <p class="text-dynamic-sub text-lg mb-6">Hover or tap to see both sides of our authentic premium product.</p>
+                    <div class="flex justify-center md:justify-start gap-4">
+                        <span class="bg-ssbBlue/20 text-ssbBlue px-3 py-1.5 rounded-full font-bold text-xs border border-ssbBlue/50"><i class="fas fa-cube"></i> Front View</span>
+                        <span class="bg-ssbGreen/20 text-ssbGreen px-3 py-1.5 rounded-full font-bold text-xs border border-ssbGreen/50"><i class="fas fa-sync-alt"></i> Back View</span>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 flex justify-center">
+                    <div class="flip-wrapper w-full max-w-[350px] h-[400px]" onclick="this.classList.toggle('active')">
+                        <div class="flip-inner">
+                            <div class="flip-front bg-gray-50 dark:bg-[#0a192f] border border-gray-300 dark:border-ssbBlue shadow-lg rounded-2xl">
+                                <div class="bg-giant-text">FRONT</div>
+                                <img src="logo.jpeg" alt="Front Original Pic" class="product-3d-img rounded-xl shadow-lg" onerror="this.src='https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&q=80'">
+                                <div class="mt-auto text-center pb-4"><span class="bg-ssbBlue text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Front Side</span></div>
+                            </div>
+                            <div class="flip-back bg-green-50 dark:bg-green-900/20 border border-ssbGreen shadow-lg rounded-2xl">
+                                <div class="bg-giant-text">BACK</div>
+                                <img src="logo.jpeg" alt="Back Original Pic" class="product-3d-img rounded-xl shadow-lg" onerror="this.src='https://images.unsplash.com/photo-1615397323281-22e70e93eb2e?w=400&q=80'">
+                                <div class="mt-auto text-center pb-4"><span class="bg-ssbGreen text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Back Side / Details</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 relative z-10 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-transparent">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-black text-dynamic uppercase tracking-widest">Proud to announce with you</h2>
+                    <div class="w-24 h-1.5 bg-gradient-to-r from-ssbBlue to-ssbGreen mx-auto rounded-full mt-4"></div>
+                </div>
+                
+                <div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-black relative">
+                    <video src="ssb.mp4" controls autoplay muted loop class="w-full h-auto aspect-video object-cover opacity-90 hover:opacity-100 transition-opacity"></video>
+                    <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/20 text-gold px-4 py-2 rounded-lg font-black tracking-widest text-sm shadow-lg">
+                        SSB BROTHER
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="brands" class="py-20 relative z-10 border-t border-gray-200 dark:border-white/10">
+            <div class="max-w-[1400px] mx-auto px-4">
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl md:text-5xl font-black text-dynamic tracking-tight uppercase">Our <span class="text-ssbBlue">Products</span></h2>
+                </div>
+
+                <div class="max-w-2xl mx-auto mb-8 relative px-4">
+                    <div class="relative">
+                        <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Search for products (e.g. Diaper)..." class="w-full py-4 pl-12 pr-4 rounded-full bg-white dark:bg-white/10 border border-gray-300 dark:border-ssbBlue/50 text-dynamic outline-none shadow-md dark:shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                        <i class="fas fa-search absolute left-5 top-1/2 transform -translate-y-1/2 text-ssbBlue"></i>
+                    </div>
+                </div>
+
+                <div class="w-full overflow-x-auto pb-4 mb-8 hide-scrollbar">
+                    <div id="category-buttons" class="flex justify-start gap-4 w-max mx-auto px-4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8" id="iso-product-grid"></div>
+            </div>
+        </section>
+
+        <footer id="location-qr" class="py-12 md:py-16 relative z-10 bg-gray-200 dark:bg-[#02050a] border-t border-gray-300 dark:border-white/10">
+            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 border-b border-gray-300 dark:border-white/10 pb-10">
+                <div class="text-center md:text-left">
+                    <h3 class="text-dynamic text-xl font-black mb-4 tracking-widest border-l-4 border-ssbBlue pl-3 inline-block">SSB BROTHER</h3>
+                    <p class="text-dynamic-sub text-sm mb-4 leading-relaxed">Your required we have solution for you. If found buy now, if not tell us we add for you.</p>
+                    
+                    <a href="https://www.google.com/maps/search/?api=1&query=S.S.B.+Brothers+Trading+Pvt.+Ltd.,+Kathmandu" target="_blank" class="text-dynamic font-bold mt-2 hover:text-ssbBlue transition-colors block cursor-pointer">
+                        <i class="fas fa-map-marker-alt text-ssbRed mr-2"></i>S.S.B. Brothers Trading Pvt. Ltd., Kathmandu 44600
+                    </a>
+
+                    <div class="flex gap-4 mt-6 justify-center md:justify-start">
+                        <a href="https://www.facebook.com" target="_blank" class="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"><i class="fab fa-facebook-f text-lg"></i></a>
+                        <a href="https://www.tiktok.com" target="_blank" class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"><i class="fab fa-tiktok text-lg"></i></a>
+                        <a href="https://www.instagram.com" target="_blank" class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"><i class="fab fa-instagram text-lg"></i></a>
+                        <a href="https://www.youtube.com" target="_blank" class="w-10 h-10 rounded-full bg-[#FF0000] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"><i class="fab fa-youtube text-lg"></i></a>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <h4 class="text-dynamic font-bold tracking-widest uppercase mb-4 text-sm">Universal Scan</h4>
+                    <div class="w-[120px] h-[120px] mx-auto bg-white rounded-xl p-2 shadow-lg">
+                        <img src="my_qr_code.jpg" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SSB-Brother-Payment-Gateway'" class="w-full h-full rounded object-contain">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 font-bold">Pay via eSewa/Khalti/Bank</p>
+                </div>
+
+                <div class="text-center md:text-left">
+                    <h4 class="text-dynamic font-bold tracking-widest uppercase mb-4 text-sm">Location Map</h4>
+                    <div class="rounded-xl overflow-hidden shadow-lg border border-gray-400 h-32 relative">
+                        <iframe src="https://maps.google.com/maps?q=Kathmandu%2044600&t=&z=14&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" loading="lazy" class="absolute inset-0 filter invert-[0.9] dark:invert-[0.9] invert-[0]"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-dynamic-sub text-xs mt-6 font-bold tracking-widest">
+                © 2026 S.S.B. BROTHERS TRADING PVT. LTD. | THE ULTIMATE MASTERPIECE.
+            </div>
+        </footer>
+    </div>
+
+    <div id="surpriseModal" class="modal-overlay">
+        <div class="modal-content text-white relative bg-black">
+            <div class="close-btn" onclick="closeModal('surpriseModal')"><i class="fas fa-times"></i></div>
+            <div id="galaxy-intro-overlay">
+                <div class="hyperspace"></div>
+                <h2 class="z-10 text-5xl md:text-7xl font-black text-white uppercase tracking-widest animate-pulse">Warp Speed...</h2>
+            </div>
+            <div id="galaxy-content" class="w-full pt-20 px-4 pb-20 opacity-0 hidden min-h-screen" style="background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2000') no-repeat center center fixed; background-size: cover;">
+                <h3 class="text-center text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-ssbBlue to-ssbGreen mb-12"><i class="fas fa-meteor text-ssbBlue"></i> Exclusive Galaxy Deals</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 max-w-[1400px] mx-auto" id="modalSurpriseGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="productDetailModal" class="modal-overlay">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-5xl mx-auto rounded-xl flex flex-col shadow-[0_0_50px_rgba(0,0,0,0.5)] max-h-[95vh] overflow-y-auto relative mt-5">
+            <div class="close-btn" onclick="closeModal('productDetailModal')"><i class="fas fa-times"></i></div>
+
+            <div class="flex flex-col md:flex-row w-full">
+                <div class="w-full md:w-5/12 p-6 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-900">
+                    <img id="main-detail-img" src="" class="w-full aspect-square object-contain bg-white dark:bg-black/20 rounded-lg border p-2">
+                </div>
+
+                <div class="w-full md:w-7/12 p-6 flex flex-col lg:flex-row gap-6">
+                    <div class="flex-1 flex flex-col">
+                        <h2 id="detail-name" class="text-2xl font-bold text-gray-800 dark:text-white mb-2 leading-tight">Product Name</h2>
+                        <div class="flex items-center gap-3 mb-2 text-sm border-b pb-2 border-gray-200 dark:border-gray-700">
+                            <div class="text-gold flex"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                            <span class="text-gray-400">|</span> Brand: <span id="detail-company" class="text-ssbBlue font-bold">Company</span>
+                        </div>
+
+                        <p id="detail-desc" class="text-sm text-gray-600 dark:text-gray-300 mb-4 mt-2">Description here.</p>
+
+                        <div class="mb-4 bg-green-50 dark:bg-green-500/10 p-4 rounded-lg border border-green-200 dark:border-green-500/30">
+                            <div class="flex items-end gap-3 mb-1">
+                                <p class="text-4xl font-black text-ssbGreen">Rs. <span id="detail-price">0</span></p>
+                                <p class="text-gray-500 text-sm line-through mb-1">Rs. <span id="detail-old-price">0</span></p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 flex items-center gap-4">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 w-16">Size</span>
+                            <div class="size-box active text-gray-800 dark:text-gray-200" id="size-default">Standard</div>
+                        </div>
+
+                        <div class="mb-6 flex items-center gap-4">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 w-16">Quantity</span>
+                            <div class="flex items-center">
+                                <button class="qty-btn" onclick="updateQty(-1)">-</button>
+                                <input type="text" id="product-qty" value="1" readonly class="w-12 h-[30px] text-center bg-white dark:bg-black/20 border-y border-gray-300 dark:border-gray-600 text-dynamic outline-none font-bold">
+                                <button class="qty-btn" onclick="updateQty(1)">+</button>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 mt-auto">
+                            <button class="flex-1 bg-ssbBlue text-white py-3 rounded-lg text-sm font-bold shadow-md hover:opacity-90 transition-opacity" onclick="addCurrentToCart(true)">Buy Now</button>
+                            <button class="flex-1 bg-ssbGreen text-white py-3 rounded-lg text-sm font-bold shadow-md hover:opacity-90 transition-opacity" onclick="addCurrentToCart(false)">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-64 bg-gray-50 dark:bg-black/20 p-4 rounded-lg border border-gray-200 dark:border-gray-700 text-sm h-fit text-gray-800 dark:text-white">
+                        <div class="flex justify-between items-center mb-4"><h4 class="text-xs text-gray-500 font-bold uppercase tracking-wider">Delivery Options</h4></div>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-500/30 mb-4">
+                            <a href="https://www.google.com/maps/search/?api=1&query=S.S.B.+Brothers+Trading+Pvt.+Ltd.,+Kathmandu" target="_blank" class="text-xs text-gray-600 dark:text-gray-400 mb-2 font-bold cursor-pointer hover:text-ssbBlue block">
+                                <i class="fas fa-store text-ssbBlue mr-1"></i>From: S.S.B. Brothers, KTM
+                            </a>
+                            <button onclick="calculateDeliveryGPS()" class="w-full bg-ssbBlue hover:bg-blue-600 text-white py-2 rounded text-xs font-bold flex items-center justify-center gap-2 mt-2">
+                                <i class="fas fa-location-arrow"></i> Use My Location
+                            </button>
+                            <div id="gps-result" class="mt-2 text-[11px] font-bold text-gray-600 dark:text-gray-300 text-center"></div>
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="fas fa-money-bill-wave text-gray-400"></i>
+                            <p id="detail-payment-option" class="font-bold text-gray-800 dark:text-gray-300">Cash on Delivery Available</p>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mb-2 border-t border-gray-200 pt-4 dark:border-gray-700"><h4 class="text-xs text-gray-500 font-bold uppercase">Return & Warranty</h4></div>
+                        <div class="flex items-center gap-3 mb-2"><i class="fas fa-undo text-gray-400"></i><p id="detail-return-policy" class="font-bold text-gray-800 dark:text-gray-300">14 Days Free Returns</p></div>
+                        <p class="text-[10px] text-red-500 mt-2 italic leading-tight">* Note: Delivery charge must be paid by the customer for returns or exchanges.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800/50 mt-auto">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4"><i class="fas fa-comments text-ssbBlue mr-2"></i>Customer Reviews & Experiences</h3>
+                
+                <div class="mb-6 bg-white dark:bg-slate-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <p class="text-sm text-gray-500 mb-2 font-bold">Share your experience with others:</p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="reviewer-name" placeholder="Your Name" class="w-full sm:w-1/3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/20 text-dynamic text-sm outline-none focus:border-ssbBlue">
+                        <input type="text" id="review-text" placeholder="Write your comment here..." class="w-full flex-1 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/20 text-dynamic text-sm outline-none focus:border-ssbBlue">
+                        <button onclick="submitProductReview()" class="bg-ssbBlue hover:bg-blue-600 text-white font-bold py-2 px-6 rounded transition-colors text-sm">Post</button>
+                    </div>
+                </div>
+
+                <div id="reviews-list" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cartModal" class="modal-overlay">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg mx-auto mt-10 rounded-2xl border border-gray-300 dark:border-ssbBlue p-6 relative flex flex-col max-h-[85vh]">
+            <div class="absolute top-4 right-4 text-xl text-gray-800 dark:text-white cursor-pointer hover:text-red-500" onclick="closeModal('cartModal')"><i class="fas fa-times"></i></div>
+            <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2"><i class="fas fa-shopping-cart text-ssbBlue"></i> Your Cart</h2>
+            
+            <div id="cart-items-container" class="flex-1 overflow-y-auto pr-2 space-y-3"></div>
+            
+            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2"><span>Subtotal:</span><span>Rs. <span id="cart-subtotal">0</span></span></div>
+                <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2"><span>Estimated Delivery:</span><span>Rs. <span id="cart-delivery-cost">50</span></span></div>
+                
+                <div class="my-4 border-t border-b border-gray-200 dark:border-gray-700 py-3">
+                    <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-2">Select Payment Method:</h3>
+                    <div class="flex flex-col gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="payment_method" value="Cash on Delivery (COD)" checked class="accent-ssbBlue w-4 h-4">
+                            <span class="text-sm font-bold text-gray-600 dark:text-gray-300"><i class="fas fa-money-bill-wave text-green-500 mr-1"></i> Cash on Delivery</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="payment_method" value="QR Payment (eSewa/Khalti)" class="accent-ssbBlue w-4 h-4">
+                            <span class="text-sm font-bold text-gray-600 dark:text-gray-300"><i class="fas fa-qrcode text-purple-500 mr-1"></i> Pay via QR (eSewa/Khalti)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex justify-between text-lg font-bold text-gray-800 dark:text-white mb-4">
+                    <span>Total Amount:</span><span class="text-ssbGreen">Rs. <span id="cart-total">0</span></span>
+                </div>
+                <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-black text-lg hover:scale-105 transition-transform" onclick="checkoutWhatsApp()">
+                    <i class="fab fa-whatsapp text-xl mr-2"></i> Order via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const myCategories = [
+            "All", "Zubara", "Evora", "Samsung", "marico", "mehta blue chip", "paree", "chikool", 
+            "mediplus", "nutricia babymilk", "Puma", "Bata", "Goldstar", "Patanjali", "Dabur", 
+            "Himalaya", "Unilever", "P&G", "Nestle", "Coca-Cola", "Pepsi", 
+            "Wai Wai", "CG", "Dell", "HP", "Lenovo", "Asus", "Acer", "Canon", 
+            "Nikon", "Gucci", "Zara", "H&M", "Toyota", "Honda", "Suzuki", 
+            "Yamaha", "Bajaj", "TVS", "Royal Enfield", "Rolex", "Casio", 
+            "Titan", "Fastrack", "Ray-Ban", "Loreal", "Lakme"
+        ];
+
+        const myProducts = [
+            { company: 'Zubara', name: 'Zubara M40 Diaper', image: 'zubaraM40.png', mrp: 1150, discount: 0, desc: 'High absorption, leak-proof baby diapers. Size M, 40 pieces.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Prepaid Only (No COD)' },
+            { company: 'Zubara', name: 'Zubara L40 Premium', image: 'zubaral40.png', mrp: 11900, discount: 0, desc: 'Premium quality soft pants for large babies.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Prepaid Only (No COD)' },
+            { company: 'Zubara', name: 'Zubara XXL40 Baby', image: 'zubaraxxl40.png', mrp: 1275, discount: 0, desc: 'XXL Size baby diapers for maximum comfort.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Zubara', name: 'Zubara Xl Baby', image: 'zubaraxl40.png', mrp: 1225, discount: 0, desc: 'XL Size baby diapers, 40 pieces pack.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Zubara', name: 'Zubara s40 Baby', image: 'zubars40.png', mrp: 1075, discount: 0, desc: 'Small size baby diapers for newborns and infants.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Zubara', name: 'Zubara liner', image: 'zubaraliner20pcs.png', mrp: 100, discount: 0, desc: 'Zubara panty liners, 20 pcs pack.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Zubara', name: 'Zubara period panty', image: 'period panti M-l.png', mrp: 150, discount: 0, desc: 'Comfortable period panty size M-L.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Zubara', name: 'Zubara water wipes 80pull', image: 'waterwipes.png', mrp: 200, discount: 0, desc: 'Gentle water wipes, 80 pulls per pack.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Cash on Delivery Available' },
+            { company: 'mehta blue chip', name: 'almond lotion 300ml', image: 'bluchip lotion.png', mrp: 250, discount: 0, desc: 'Nourishing almond body lotion 300ml.', returnPolicy: '7 Days Return (Unopened)', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Zubara', name: 'Zubara NB22', image: 'zubaranb22.png', mrp: 540, discount: 0, desc: 'Newborn diapers, 22 pieces.', returnPolicy: 'No Return for Hygiene Items', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Evora', name: 'Evora 160gm*10pcs Tissue', image: 'evora160gm.jpeg', mrp: 800, discount: 20, desc: 'Evora premium tissue bundle 160gm x 10 pcs.', returnPolicy: '7 Days Return', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Evora', name: 'Evora 55gm Tissue', image: 'evora55gm.jpeg', mrp: 200, discount: 20, desc: 'Soft facial tissue 55gm.', returnPolicy: '7 Days Return', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Evora', name: 'Evora Box Tissue', image: 'evorabox.jpeg', mrp: 150, discount: 5, desc: 'Premium box tissue for home and office.', returnPolicy: '7 Days Return', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Evora', name: 'Evora Surgical Mask', image: 'evoramask.jpeg', mrp: 150, discount: 0, desc: 'High-quality Evora surgical masks.', returnPolicy: 'No Return (Health & Safety)', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Evora', name: 'Evora Pocket Tissue', image: 'evorapockettissu.jpeg', mrp: 100, discount: 0, desc: 'Handy pocket tissues for travel.', returnPolicy: '7 Days Return', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Evora', name: 'Evora 200 Pulls', image: 'evorabox200.jpeg', mrp: 200, discount: 40, desc: 'Evora 200 pulls tissue box.', returnPolicy: '7 Days Return', paymentOption: 'Cash on Delivery Available' },
+            { company: 'Evora', name: 'Evora Blue Box', image: 'evoraboxblue.jpeg', mrp: 300, discount: 30, desc: 'Evora blue box premium tissues.', returnPolicy: '7 Days Return', paymentOption: 'Cash on Delivery Available' },
+            { company: 'nutricia babymilk', name: 'Farex-1', image: 'farex-1.png', mrp: 1495, discount: 0, desc: 'Farex-1 baby milk powder.', returnPolicy: 'No Return on Baby Food', paymentOption: 'Cash on Delivery Available' }
+        ];
+
+        let productReviews = JSON.parse(localStorage.getItem('ssb_reviews')) || {
+            "Zubara M40 Diaper": [{ name: "Sita Sharma", text: "Very soft and no leakage. My baby slept comfortably all night!", date: "16 Mar 2026" }],
+            "Evora 55gm Tissue": [{ name: "Ram Thapa", text: "Good quality and very soft for face. Will buy again.", date: "15 Mar 2026" }]
+        };
+
+        const isoGrid = document.getElementById('iso-product-grid');
+        const btnContainer = document.getElementById('category-buttons');
+        let currentCategory = 'All';
+        let currentDeliveryFee = 50; 
+        let currentQty = 1;
+
+        function renderCategoryButtons(activeCategory) {
+            let btnHtml = '';
+            myCategories.forEach(category => {
+                let isActive = category === activeCategory;
+                let btnClass = isActive ? 'bg-ssbBlue text-white border-ssbBlue' : 'bg-black/10 dark:bg-white/10 text-dynamic border-gray-400 dark:border-gray-600';
+                btnHtml += `<button onclick="showProducts('${category}')" class="px-6 py-2 rounded-full font-bold transition-all border ${btnClass}">${category}</button>`;
+            });
+            btnContainer.innerHTML = btnHtml;
+        }
+
+        window.showProducts = function(selectedCompany) {
+            currentCategory = selectedCompany; renderCategoryButtons(selectedCompany);
+            document.getElementById('searchInput').value = ''; filterAndDisplayProducts();
+        };
+        window.searchProducts = function() { filterAndDisplayProducts(); };
+
+        function filterAndDisplayProducts() {
+            isoGrid.innerHTML = ''; let htmlCode = '';
+            let searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            let filteredProducts = myProducts.filter(item => {
+                let matchesCategory = currentCategory === 'All' || item.company === currentCategory;
+                let matchesSearch = item.name.toLowerCase().includes(searchQuery) || item.company.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            filteredProducts.forEach(item => {
+                let finalPrice = item.mrp - item.discount;
+                htmlCode += `
+                    <div class="flip-wrapper h-[300px] bg-white dark:bg-transparent rounded-2xl shadow-md dark:shadow-none" onclick="this.classList.toggle('active')">
+                        <div class="flip-inner">
+                            <div class="flip-front border border-gray-200 dark:border-white/10">
+                                <img src="${item.image}" class="product-3d-img rounded-xl" onerror="this.src='https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&q=80'">
+                                <div class="content-3d mt-auto text-center w-full pb-4">
+                                    <h3 class="text-sm font-black text-dynamic truncate px-2">${item.name}</h3>
+                                    <p class="text-lg font-bold text-ssbBlue mt-1">Rs. ${finalPrice}</p>
+                                </div>
+                            </div>
+                            <div class="flip-back bg-gray-50 dark:bg-[#0a192f] border border-gray-300 dark:border-ssbBlue">
+                                <div class="content-3d w-full mt-auto p-4">
+                                    <button class="w-full py-2 mb-3 border-2 border-ssbBlue text-ssbBlue rounded-lg font-bold hover:bg-ssbBlue hover:text-white transition-colors" onclick="event.stopPropagation(); openProductModal('${item.name}', '${item.image}', ${item.mrp}, ${item.discount}, '${item.company}', \`${item.desc}\`, \`${item.returnPolicy || '14 Days Free Returns'}\`, \`${item.paymentOption || 'Cash on Delivery Available'}\`);">
+                                        View Full Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            isoGrid.innerHTML = htmlCode;
+        }
+
+        // PRODUCT MODAL, QTY & DESCRIPTION
+        let currentModalProduct = {};
+        
+        window.openProductModal = function(name, image, mrp, discount, company, desc, returnPolicy, paymentOption) {
+            let finalPrice = mrp - discount;
+            currentModalProduct = { name, basePrice: finalPrice, image };
+            currentQty = 1; 
+            document.getElementById('product-qty').value = currentQty;
+
+            document.getElementById('detail-name').innerText = name;
+            document.getElementById('detail-company').innerText = company;
+            document.getElementById('detail-price').innerText = finalPrice;
+            document.getElementById('main-detail-img').src = image;
+            document.getElementById('detail-desc').innerText = desc || "Premium Quality Product.";
+            document.getElementById('detail-return-policy').innerText = returnPolicy;
+            document.getElementById('detail-payment-option').innerText = paymentOption || "Cash on Delivery Available";
+
+            if(discount > 0) { document.getElementById('detail-old-price').innerText = mrp; } 
+            else { document.getElementById('detail-old-price').innerText = ''; }
+            
+            document.getElementById('gps-result').innerHTML = '';
+            renderReviews(name);
+            document.getElementById('productDetailModal').style.display = 'flex';
+        }
+
+        function renderReviews(productName) {
+            const list = document.getElementById('reviews-list');
+            list.innerHTML = '';
+            let reviews = productReviews[productName] || [];
+            
+            if(reviews.length === 0) {
+                list.innerHTML = '<p class="text-sm text-gray-500 italic">No reviews yet. Be the first to share your experience!</p>';
+                return;
+            }
+
+            [...reviews].reverse().forEach(rev => {
+                list.innerHTML += `
+                    <div class="bg-white dark:bg-black/30 p-3 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-sm text-gray-800 dark:text-white"><i class="fas fa-user-circle text-gray-400 mr-1"></i> ${rev.name}</span>
+                            <span class="text-xs text-gray-500">${rev.date}</span>
+                        </div>
+                        <div class="text-gold text-[10px] mb-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">${rev.text}</p>
+                    </div>
+                `;
+            });
+        }
+
+        window.submitProductReview = function() {
+            let name = document.getElementById('reviewer-name').value;
+            let text = document.getElementById('review-text').value;
+            if(!name || !text) { alert("Please enter both your name and comment!"); return; }
+            
+            let pName = currentModalProduct.name;
+            if(!productReviews[pName]) productReviews[pName] = [];
+            
+            const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+            let date = new Date().toLocaleDateString('en-GB', dateOptions);
+            
+            productReviews[pName].push({ name, text, date });
+            localStorage.setItem('ssb_reviews', JSON.stringify(productReviews));
+            
+            document.getElementById('reviewer-name').value = '';
+            document.getElementById('review-text').value = '';
+            renderReviews(pName);
+        }
+
+        window.updateQty = function(change) {
+            let newQty = currentQty + change;
+            if (newQty >= 1 && newQty <= 20) { 
+                currentQty = newQty;
+                document.getElementById('product-qty').value = currentQty;
+                document.getElementById('detail-price').innerText = currentModalProduct.basePrice * currentQty;
+            }
+        }
+
+        window.addCurrentToCart = function(isBuyNow) {
+            let size = document.getElementById('size-default').innerText;
+            addToCart(`${currentModalProduct.name} (${size})`, currentModalProduct.basePrice, currentQty, currentModalProduct.image);
+            closeModal('productDetailModal');
+            if(isBuyNow) { openCartModal(); }
+        }
+
+        window.calculateDeliveryGPS = function() {
+            const resultEl = document.getElementById('gps-result');
+            resultEl.innerHTML = '<i class="fas fa-spinner fa-spin text-ssbBlue"></i> Tracking...';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const storeLat = 27.7172; 
+                    const storeLon = 85.3240; 
+                    
+                    const dLat = (position.coords.latitude - storeLat) * (Math.PI/180);
+                    const dLon = (position.coords.longitude - storeLon) * (Math.PI/180);
+                    const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(storeLat*Math.PI/180)*Math.cos(position.coords.latitude*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+                    const distance = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+                    currentDeliveryFee = 50 + (distance > 5 ? Math.ceil(distance - 5) * 10 : 0);
+                    resultEl.innerHTML = `<span class="text-ssbGreen"><i class="fas fa-check"></i> Found</span> | Dist: ${distance.toFixed(1)}km <br> Cost: <span class="text-ssbBlue font-black">Rs. ${currentDeliveryFee}</span>`;
+                }, () => { resultEl.innerHTML = '<span class="text-red-500">Turn on GPS!</span>'; });
+            }
+        }
+
+        let cart = [];
+        window.addToCart = function(productName, unitPrice, qty, img) {
+            cart.push({ name: productName, unitPrice: unitPrice, qty: qty, total: unitPrice * qty, img: img });
+            document.getElementById('cart-count').innerText = cart.length;
+            document.getElementById('floating-cart').classList.remove('hidden');
+        }
+
+        window.openCartModal = function() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = ''; let subtotal = 0;
+            if(cart.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-6">Your cart is empty.</p>'; currentDeliveryFee = 0;
+            } else {
+                cart.forEach((item, index) => {
+                    subtotal += item.total;
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10">
+                            <div class="flex items-center gap-3">
+                                <img src="${item.img || ''}" class="w-10 h-10 object-contain rounded bg-white">
+                                <div class="w-32 md:w-48"><span class="text-gray-800 dark:text-white text-sm font-bold block truncate">${item.name}</span><span class="text-xs text-gray-500">Qty: ${item.qty}</span></div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-ssbBlue font-bold">Rs. ${item.total}</span>
+                                <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>`;
+                });
+            }
+            document.getElementById('cart-subtotal').innerText = subtotal;
+            document.getElementById('cart-delivery-cost').innerText = currentDeliveryFee;
+            document.getElementById('cart-total').innerText = subtotal + currentDeliveryFee;
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        window.removeFromCart = function(index) {
+            cart.splice(index, 1); document.getElementById('cart-count').innerText = cart.length; openCartModal(); 
+            if(cart.length === 0) { document.getElementById('floating-cart').classList.add('hidden'); closeModal('cartModal'); }
+        }
+
+        window.checkoutWhatsApp = function() {
+            if(cart.length === 0) return;
+            
+            let myWhatsAppNumber = "9779744432502"; 
+            let paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            
+            let message = "नमस्ते SSB Brother Trading! अर्डर विवरण:\n\n";
+            let subtotal = 0;
+            cart.forEach((item, i) => { message += `${i+1}. ${item.name} | Qty: ${item.qty} | Rs. ${item.total}\n`; subtotal += item.total; });
+            
+            message += `\n🚚 Delivery Cost: Rs. ${currentDeliveryFee}`;
+            message += `\n🛒 Total Amount: Rs. ${subtotal + currentDeliveryFee}`;
+            message += `\n💳 Payment Method: ${paymentMethod}\n\nकृपया डेलिभरीको जानकारी दिनुहोला।`;
+            
+            window.open(`https://wa.me/${myWhatsAppNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; }
+
+        window.openSurpriseModal = function() {
+            const modal = document.getElementById('surpriseModal'); modal.style.display = 'flex';
+            const overlay = document.getElementById('galaxy-intro-overlay'); const contentBox = document.getElementById('galaxy-content');
+            const grid = document.getElementById('modalSurpriseGrid'); 
+            overlay.style.opacity = '1'; overlay.style.display = 'flex'; contentBox.style.opacity = '0'; contentBox.style.display = 'none'; grid.innerHTML = ""; 
+            
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none'; contentBox.style.display = 'block'; contentBox.style.opacity = '1';
+                    for(let i = 1; i <= 5; i++) {
+                        let price = 500 + (i * 50);
+                        setTimeout(() => {
+                            grid.innerHTML += `
+                                <div class="flip-wrapper h-[300px]" onclick="this.classList.toggle('active')">
+                                    <div class="flip-inner">
+                                        <div class="flip-front" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2);">
+                                            <div class="content-3d mt-auto text-center w-full"><h4 class="font-bold text-white mb-1">Galaxy Deal ${i}</h4><p class="text-gold font-black text-xl mb-2">Rs. ${price}</p></div>
+                                        </div>
+                                        <div class="flip-back" style="background: rgba(0,242,254,0.1); border-color: #3b82f6;">
+                                            <div class="content-3d mt-auto text-center w-full"><button class="w-full py-3 bg-ssbBlue text-white rounded font-black text-sm" onclick="event.stopPropagation(); addToCart('Galaxy Deal ${i}', ${price}, 1, '');">Add to Cart</button></div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        }, i * 200);
+                    }
+                }, 800);
+            }, 2000);
+        }
+
+        let isNepali = false;
+        document.getElementById('btn-lang').addEventListener('click', (e) => {
+            isNepali = !isNepali;
+            e.target.innerText = isNepali ? 'EN' : 'NP';
+            document.querySelectorAll('[data-en]').forEach(el => { el.innerHTML = isNepali ? el.getAttribute('data-np') : el.getAttribute('data-en'); });
+        });
+
+        const themeIcon = document.getElementById('icon-theme');
+        document.getElementById('btn-theme').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            themeIcon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun text-yellow-500' : 'fas fa-moon text-slate-800';
+        });
+
+        // 🌟 PRELOADER LOGIC (यहाँ छ जादुगरी एनिमेसन) 🌟
+        document.addEventListener("DOMContentLoaded", (event) => {
+            gsap.registerPlugin(ScrollTrigger);
+            const tl = gsap.timeline();
+            tl.to("#geo-box", { opacity: 1, scale: 1.5, rotation: 180, duration: 0.5 })
+              .to("#geo-box", { opacity: 0, scale: 0, duration: 0.3 })
+              .to("#liquid-sphere", { opacity: 1, scale: 1.2, duration: 0.6 })
+              .to("#liquid-sphere", { opacity: 0, scale: 0, duration: 0.4 })
+              .to("#trail-left", { opacity: 1, left: "50%", xPercent: -50, duration: 0.8 }, "crash")
+              .to("#trail-right", { opacity: 1, right: "50%", xPercent: 50, duration: 0.8 }, "crash")
+              .to([".trail-left", ".trail-right"], { opacity: 0, duration: 0.1 })
+              .to("#shockwave", { opacity: 1, scale: 50, borderWidth: "1px", duration: 0.6 })
+              .to("#shockwave", { opacity: 0, duration: 0.2 })
+              .to("#final-logo", { opacity: 1, scale: 1, duration: 0.8 })
+              .to("#preloader", { opacity: 0, duration: 0.8, delay: 0.5, onComplete: () => {
+                  document.getElementById("preloader").style.display = "none";
+                  document.getElementById("main-content").style.display = "block";
+                  gsap.to("#main-content", { opacity: 1, duration: 0.5 });
+                  startTypewriter(); // 🌟 टाइपराइटर सुरु हुन्छ 🌟
+                  showProducts('All'); 
+              }});
+        });
+
+        // 🌟 TYPEWRITER FUNCTION 🌟
+        function startTypewriter() {
+            const text = "SSB BROTHERS TRADING";
+            let index = 0;
+            function type() {
+                if (index < text.length) {
+                    document.getElementById("typewriter-text").innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(type, 70);
+                } else {
+                    setTimeout(() => { document.getElementById("typewriter-text").classList.remove('typewriter-cursor'); }, 3000);
+                }
+            }
+            type();
+        }
+    </script>
+</body>
+</html>
