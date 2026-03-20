@@ -375,6 +375,42 @@
         window.closeModal = function(e) { if(e.target.id === 'detailModal' || e.target.id === 'addProductModal') { document.getElementById('detailModal').style.display = 'none'; document.getElementById('addProductModal').style.display = 'none';} }
         window.switchTab = function(tabId, btnElement) { document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden')); document.getElementById(tabId).classList.remove('hidden'); document.querySelectorAll('.menu-btn').forEach(btn => { btn.classList.remove('bg-[#00f2fe]/20', 'text-[#00f2fe]'); btn.classList.add('text-gray-300'); }); btnElement.classList.add('bg-[#00f2fe]/20', 'text-[#00f2fe]'); }
         window.toggleOfferFields = function() { let type = document.getElementById('new-prod-offer-type').value; let xField = document.getElementById('new-prod-offer-x'); let yField = document.getElementById('new-prod-offer-y'); if(type === 'none') { xField.disabled = true; yField.disabled = true; xField.value = 0; yField.value = 0; xField.classList.add('bg-gray-800'); yField.classList.add('bg-gray-800'); } else { xField.disabled = false; yField.disabled = false; xField.classList.remove('bg-gray-800'); yField.classList.remove('bg-gray-800'); } }
+        // 🌟 DETAILS MODAL LOGIC (REVENUE, ORDERS, REVIEWS) 🌟
+window.openDetailModal = function(type) {
+    const modal = document.getElementById('detailModal'); 
+    const title = document.getElementById('modal-title'); 
+    const content = document.getElementById('modal-content');
+    modal.style.display = 'flex';
+
+    if (type === 'revenue') { 
+        title.innerHTML = '<i class="fas fa-money-bill-wave text-[#22c55e] mr-2"></i> Revenue Breakdown'; 
+        let total = 0, cod = 0, qr = 0; 
+        globalOrders.forEach(o => { 
+            if(o.status !== 'Cancelled') { 
+                total += o.total; 
+                if(o.method && o.method.includes('QR')) qr += o.total; 
+                else cod += o.total; 
+            } 
+        }); 
+        content.innerHTML = `<div class="bg-black/40 p-4 rounded-lg border border-gray-600 mb-2"><div class="flex justify-between items-center mb-3"><span class="text-gray-400 font-bold"><i class="fas fa-truck text-green-400 mr-2"></i> Cash on Delivery</span><span class="text-xl font-bold text-white">Rs. ${cod}</span></div><div class="flex justify-between items-center border-t border-gray-700 pt-3"><span class="text-gray-400 font-bold"><i class="fas fa-qrcode text-purple-400 mr-2"></i> QR Paid</span><span class="text-xl font-bold text-white">Rs. ${qr}</span></div></div><div class="bg-green-500/20 border border-green-500/50 p-4 rounded-lg flex justify-between items-center"><span class="font-bold text-green-400">Total Valid Revenue</span><span class="text-2xl font-black text-white">Rs. ${total}</span></div>`;
+    
+    } else if (type === 'orders') { 
+        title.innerHTML = '<i class="fas fa-shopping-bag text-[#06b6d4] mr-2"></i> Orders Breakdown'; 
+        let pending = 0, completed = 0, cancelled = 0; 
+        globalOrders.forEach(o => { 
+            if(o.status === 'Completed') completed++; 
+            else if(o.status === 'Cancelled') cancelled++; 
+            else pending++; 
+        }); 
+        content.innerHTML = `<div class="space-y-3"><div class="bg-blue-500/10 border border-blue-500/30 p-4 rounded-lg flex justify-between items-center"><span class="text-[#00f2fe] font-bold">Pending</span><span class="text-2xl font-black text-white">${pending}</span></div><div class="bg-green-500/10 border border-green-500/30 p-4 rounded-lg flex justify-between items-center"><span class="text-[#22c55e] font-bold">Completed</span><span class="text-2xl font-black text-white">${completed}</span></div><div class="bg-red-500/10 border border-red-500/30 p-4 rounded-lg flex justify-between items-center"><span class="text-red-400 font-bold">Cancelled</span><span class="text-2xl font-black text-white">${cancelled}</span></div></div>`;
+    
+    } else if (type === 'reviews') { 
+        title.innerHTML = '<i class="fas fa-comment text-[#eab308] mr-2"></i> Reviews Info'; 
+        let totalComments = globalReviews.length; 
+        let activeProducts = [...new Set(globalReviews.map(r => r.productName))].length; 
+        content.innerHTML = `<div class="grid grid-cols-2 gap-4"><div class="bg-black/30 p-5 rounded-lg border border-yellow-500/30 text-center"><span class="text-4xl text-yellow-400 font-black block mb-1">${totalComments}</span><span class="text-xs text-gray-400 font-bold uppercase">Total Comments</span></div><div class="bg-black/30 p-5 rounded-lg border border-gray-600 text-center"><span class="text-4xl text-white font-black block mb-1">${activeProducts}</span><span class="text-xs text-gray-400 font-bold uppercase">Products Reviewed</span></div></div>`; 
+    }
+};
     </script>
 </body>
 </html>
