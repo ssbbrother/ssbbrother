@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSB Admin | Pro Cloud Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: radial-gradient(circle at top right, #0f2027, #203a43, #2c5364); color: white; font-family: 'Inter', sans-serif; height: 100vh; margin: 0; overflow: hidden; transition: background 0.5s ease; }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); transition: all 0.3s ease; }
+        .glass-input { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.2); color: white; }
+        .glass-input:focus { outline: none; border-color: #00f2fe; background: rgba(0, 0, 0, 0.4); }
+        body.light-theme { background: radial-gradient(circle at top right, #e0eafc, #cfdef3); color: #1f2937; }
+        body.light-theme .glass-panel { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1); color: #1f2937; }
+        body.light-theme .text-white { color: #1f2937 !important; } body.light-theme .text-gray-400 { color: #4b5563 !important; } body.light-theme .text-gray-300 { color: #374151 !important; } body.light-theme .glass-input { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.2); color: #1f2937; }
+        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: #00f2fe; border-radius: 10px; }
+        .status-Pending { color: #00f2fe; border-color: #00f2fe; background: rgba(0, 242, 254, 0.1); } .status-Completed { color: #22c55e; border-color: #22c55e; background: rgba(34, 197, 94, 0.1); } .status-Cancelled { color: #ef4444; border-color: #ef4444; background: rgba(239, 68, 68, 0.1); text-decoration: line-through; }
+        .summary-card { background: #1f2937; border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; border-width: 2px;} .summary-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); filter: brightness(1.2); } body.light-theme .summary-card { background: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .border-cyan { border-color: #06b6d4; } .border-yellow { border-color: #eab308; } .border-green { border-color: #22c55e; } .border-purple { border-color: #a855f7; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); } body.light-theme .modal-overlay { background: rgba(255,255,255,0.8); }
+        .animate-fade-in { animation: fadeIn 0.3s ease-in-out; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex items-center justify-center">
+
+    <div id="login-screen" class="glass-panel p-8 w-full max-w-md text-center transition-all duration-500 absolute z-50">
+        <div class="w-16 h-16 bg-gradient-to-br from-[#00f2fe] to-[#22c55e] rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(0,242,254,0.5)]"><span class="font-black text-white text-2xl"><i class="fas fa-lock"></i></span></div>
+        <h2 id="login-title" class="text-3xl font-black mb-1 text-white">Admin Login</h2>
+        <p class="text-xs text-gray-400 mb-4 border-b border-gray-600 pb-2">Pro Firebase Security Enabled</p>
+        
+        <form onsubmit="handleAuth(event)" class="flex flex-col gap-4 mt-4">
+            <input type="email" id="admin-email" placeholder="Admin Email" required class="glass-input w-full py-3 px-4 rounded-xl text-sm">
+            <input type="password" id="admin-pass" placeholder="Password" required class="glass-input w-full py-3 px-4 rounded-xl text-sm">
+            <p id="error-msg" class="text-red-400 text-xs hidden font-bold"></p>
+            <button type="submit" id="auth-btn" class="w-full bg-gradient-to-r from-[#00f2fe] to-blue-600 text-white font-bold py-3 rounded-xl mt-2 hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,242,254,0.4)]">Secure Login</button>
+        </form>
+        <p class="text-xs text-gray-400 mt-4 cursor-pointer hover:text-white" onclick="toggleAuthMode()">First time? <span class="text-[#00f2fe] font-bold">Create Admin Account</span></p>
+    </div>
+
+    <div id="admin-dashboard" class="w-full hidden h-full p-4 flex-col md:flex-row gap-6 max-w-[1800px] mx-auto">
+        <nav class="glass-panel w-64 p-6 hidden md:flex flex-col gap-3 shrink-0 h-full">
+            <div class="text-center mb-6 border-b border-gray-500/30 pb-4"><h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00f2fe] to-[#22c55e] tracking-widest">SSB ADMIN</h1><p class="text-[10px] text-green-400 font-bold mt-1"><i class="fas fa-wifi"></i> Cloud Synced</p></div>
+            <button onclick="switchTab('tab-dashboard', this)" class="menu-btn flex items-center gap-3 p-3 rounded-lg bg-[#00f2fe]/20 text-[#00f2fe] border border-[#00f2fe]/30 transition-all font-bold text-left"><i class="fas fa-chart-pie w-5"></i> Overview</button>
+            <button onclick="switchTab('tab-orders', this)" class="menu-btn flex items-center gap-3 p-3 rounded-lg hover:bg-gray-500/20 text-gray-300 border border-transparent transition-all font-bold text-left"><i class="fas fa-shopping-cart w-5"></i> Orders</button>
+            <button onclick="switchTab('tab-inventory', this)" class="menu-btn flex items-center gap-3 p-3 rounded-lg hover:bg-gray-500/20 text-gray-300 border border-transparent transition-all font-bold text-left"><i class="fas fa-box-open w-5"></i> Products (B2B)</button>
+            <button onclick="switchTab('tab-comments', this)" class="menu-btn flex items-center gap-3 p-3 rounded-lg hover:bg-gray-500/20 text-gray-300 border border-transparent transition-all font-bold text-left"><i class="fas fa-comments w-5"></i> Reviews</button>
+            <button onclick="switchTab('tab-settings', this)" class="menu-btn flex items-center gap-3 p-3 rounded-lg hover:bg-gray-500/20 text-gray-300 border border-transparent transition-all font-bold text-left"><i class="fas fa-cog w-5"></i> Settings</button>
+            <button onclick="switchTab('tab-live', this)" class="menu-btn flex items-center gap-3 p-3 rounded-lg hover:bg-gray-500/20 text-gray-300 border border-transparent transition-all font-bold text-left"><i class="fas fa-desktop w-5"></i> Live Site</button>
+            <button onclick="logoutAdmin()" class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-500/10 text-red-500 border border-transparent transition-all font-bold mt-auto text-left"><i class="fas fa-power-off w-5"></i> Logout</button>
+        </nav>
+
+        <main class="flex-1 h-full overflow-hidden relative">
+            <div id="tab-dashboard" class="tab-content h-full flex flex-col gap-6 animate-fade-in overflow-y-auto pr-2 hide-scrollbar">
+                <header class="glass-panel p-6 flex justify-between items-center shrink-0">
+                    <div><h2 class="text-2xl font-bold text-white">Dashboard Overview</h2></div>
+                    <div class="flex items-center gap-4">
+                        <span id="sync-status" class="text-xs font-bold text-green-400 bg-green-900/30 px-3 py-1.5 rounded-full border border-green-500/30"><i class="fas fa-cloud-upload-alt mr-1"></i> Real-time Active</span>
+                        <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-gray-500/20 flex items-center justify-center text-yellow-400 hover:scale-110 transition-transform shadow-md"><i class="fas fa-sun text-xl" id="theme-icon"></i></button>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0">
+                    <div onclick="openDetailModal('orders')" class="summary-card border-cyan"><span class="text-gray-400 text-sm font-bold flex items-center"><i class="fas fa-shopping-bag text-[#06b6d4] mr-2"></i> Orders</span><span class="text-4xl font-black block mt-3 text-white" id="stat-orders">0</span></div>
+                    <div onclick="openDetailModal('reviews')" class="summary-card border-yellow"><span class="text-gray-400 text-sm font-bold flex items-center"><i class="fas fa-comment text-[#eab308] mr-2"></i> Reviews</span><span class="text-4xl font-black block mt-3 text-white" id="stat-reviews">0</span></div>
+                    <div onclick="openDetailModal('revenue')" class="summary-card border-green"><span class="text-gray-400 text-sm font-bold flex items-center"><i class="fas fa-money-bill-wave text-[#22c55e] mr-2"></i> Revenue</span><span class="text-3xl font-black block mt-3 text-white" id="stat-revenue">Rs. 0</span></div>
+                    <div onclick="switchTab('tab-inventory', document.querySelectorAll('.menu-btn')[2])" class="summary-card border-purple"><span class="text-gray-400 text-sm font-bold flex items-center"><i class="fas fa-box text-[#a855f7] mr-2"></i> Products</span><span class="text-4xl font-black block mt-3 text-white" id="stat-products">0</span></div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 shrink-0 h-[450px]">
+                    <div class="glass-panel p-6 flex-1 flex flex-col relative overflow-hidden"><div class="flex justify-between items-start mb-6 z-20 relative"><h3 class="text-white font-bold text-sm tracking-wide leading-tight">Sales Volume by Brand</h3></div><div class="flex justify-around items-end flex-1 mt-10 pb-8 relative z-10 border-b border-gray-500/30"><div class="flex flex-col items-center justify-end h-full gap-2 relative group z-10 w-12"><span id="bar-val-1" class="text-lg text-[#22c55e] font-black absolute -top-8">0</span><div id="bar-fill-1" class="w-full bg-gradient-to-t from-blue-900 to-[#00f2fe] rounded-t shadow-[0_0_15px_#00f2fe] border-t-2 border-l border-white/60 transition-all duration-1000 ease-out" style="height: 10%;"></div><span id="bar-label-1" class="text-[10px] text-gray-300 font-bold mt-2 truncate w-full text-center">...</span></div><div class="flex flex-col items-center justify-end h-full gap-2 relative group z-10 w-12"><span id="bar-val-2" class="text-lg text-[#22c55e] font-black absolute -top-8">0</span><div id="bar-fill-2" class="w-full bg-gradient-to-t from-blue-900 to-[#00f2fe] rounded-t shadow-[0_0_15px_#00f2fe] border-t-2 border-l border-white/60 transition-all duration-1000 ease-out" style="height: 10%;"></div><span id="bar-label-2" class="text-[10px] text-gray-300 font-bold mt-2 truncate w-full text-center">...</span></div><div class="flex flex-col items-center justify-end h-full gap-2 relative group z-10 w-12"><span id="bar-val-3" class="text-lg text-[#22c55e] font-black absolute -top-8">0</span><div id="bar-fill-3" class="w-full bg-gradient-to-t from-blue-900 to-[#00f2fe] rounded-t shadow-[0_0_15px_#00f2fe] border-t-2 border-l border-white/60 transition-all duration-1000 ease-out" style="height: 10%;"></div><span id="bar-label-3" class="text-[10px] text-gray-300 font-bold mt-2 truncate w-full text-center">...</span></div><div class="flex flex-col items-center justify-end h-full gap-2 relative group z-10 w-12"><span id="bar-val-4" class="text-lg text-[#22c55e] font-black absolute -top-8">0</span><div id="bar-fill-4" class="w-full bg-gradient-to-t from-blue-900 to-[#00f2fe] rounded-t shadow-[0_0_15px_#00f2fe] border-t-2 border-l border-white/60 transition-all duration-1000 ease-out" style="height: 10%;"></div><span id="bar-label-4" class="text-[10px] text-gray-300 font-bold mt-2 truncate w-full text-center">...</span></div><div class="flex flex-col items-center justify-end h-full gap-2 relative group z-10 w-12"><span id="bar-val-5" class="text-lg text-[#22c55e] font-black absolute -top-8">0</span><div id="bar-fill-5" class="w-full bg-gradient-to-t from-blue-900 to-[#00f2fe] rounded-t shadow-[0_0_15px_#00f2fe] border-t-2 border-l border-white/60 transition-all duration-1000 ease-out" style="height: 10%;"></div><span id="bar-label-5" class="text-[10px] text-gray-300 font-bold mt-2 truncate w-full text-center">...</span></div></div></div>
+                    <div class="glass-panel p-6 w-full lg:w-[350px] flex flex-col relative"><h3 class="text-white font-bold text-sm tracking-wide leading-tight mb-4">Live Order Status</h3><div class="flex-1 flex flex-col items-center justify-center"><div id="dynamic-pie-chart" class="w-40 h-40 rounded-full border-4 border-gray-500/20 mb-8 relative transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(0,242,254,0.2)]" style="background: conic-gradient(#00f2fe 0% 100%);"><div class="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent"></div><div class="absolute top-4 left-4 w-6 h-6 rounded-full bg-white/50 blur-[3px]"></div></div><div class="w-full space-y-3 px-4"><div class="flex items-center justify-between text-xs"><div class="flex items-center"><span class="w-3 h-3 rounded-full bg-[#00f2fe] mr-3"></span><span class="text-gray-400 font-bold">Pending</span></div><span class="text-[#00f2fe] font-black" id="pie-txt-pending">0%</span></div><div class="flex items-center justify-between text-xs"><div class="flex items-center"><span class="w-3 h-3 rounded-full bg-[#22c55e] mr-3"></span><span class="text-gray-400 font-bold">Completed</span></div><span class="text-[#22c55e] font-black" id="pie-txt-completed">0%</span></div><div class="flex items-center justify-between text-xs"><div class="flex items-center"><span class="w-3 h-3 rounded-full bg-[#ef4444] mr-3"></span><span class="text-gray-400 font-bold">Cancelled</span></div><span class="text-[#ef4444] font-black" id="pie-txt-cancelled">0%</span></div></div></div></div>
+                </div>
+            </div>
+
+            <div id="tab-orders" class="tab-content hidden h-full flex flex-col gap-4 animate-fade-in"><div class="glass-panel p-4"><h3 class="font-bold text-xl text-[#00f2fe]"><i class="fas fa-shopping-cart mr-2"></i> Manage Cloud Orders</h3></div><div class="glass-panel p-6 flex-1 overflow-y-auto hide-scrollbar"><div id="order-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"></div></div></div>
+            
+            <div id="tab-inventory" class="tab-content hidden h-full flex flex-col gap-4 animate-fade-in">
+                <div class="glass-panel p-4 flex justify-between items-center shrink-0"><h3 class="font-bold text-xl text-[#a855f7]"><i class="fas fa-box-open mr-2"></i> Cloud Inventory (B2B)</h3><button onclick="openAddProductModal()" class="bg-[#a855f7] hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(168,85,247,0.5)]"><i class="fas fa-plus mr-2"></i> Add Product</button></div>
+                <div class="glass-panel p-6 flex-1 overflow-y-auto hide-scrollbar"><div id="inventory-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div></div>
+            </div>
+
+            <div id="tab-comments" class="tab-content hidden h-full flex flex-col gap-4 animate-fade-in"><div class="glass-panel p-4"><h3 class="font-bold text-xl text-yellow-400"><i class="fas fa-comments mr-2"></i> Cloud Reviews Moderation</h3></div><div class="glass-panel p-6 flex-1 overflow-y-auto hide-scrollbar"><div id="comment-list" class="flex flex-col gap-4 max-w-4xl"></div></div></div>
+            
+            <div id="tab-settings" class="tab-content hidden h-full flex flex-col gap-4 animate-fade-in">
+                <div class="glass-panel p-4"><h3 class="font-bold text-xl text-[#00f2fe]"><i class="fas fa-cog mr-2"></i> Admin & Privacy Settings</h3></div>
+                <div class="glass-panel p-6 flex-1 overflow-y-auto hide-scrollbar">
+                    
+                    <div class="bg-red-900/20 border border-red-500/30 p-5 rounded-lg mb-8">
+                        <h4 class="text-white font-bold mb-2"><i class="fas fa-shield-alt text-red-400 mr-2"></i> Change Admin Password</h4>
+                        <p class="text-xs text-gray-400 mb-4">Update your secure Firebase authentication password below.</p>
+                        <div class="flex gap-4 max-w-md">
+                            <input type="password" id="new-admin-pass" placeholder="Enter New Password (min 6 chars)" class="glass-input flex-1 p-3 rounded-lg text-sm">
+                            <button onclick="changeAdminPassword()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-lg transition-colors">Update Key</button>
+                        </div>
+                        <p id="pass-msg" class="text-xs font-bold mt-2 hidden"></p>
+                    </div>
+
+                    <h4 class="text-white font-bold mb-2"><i class="fas fa-video text-[#00f2fe] mr-2"></i> Promotional Video URL</h4>
+                    <p class="text-xs text-gray-400 mb-4">Instead of uploading heavy files, paste a direct MP4 link here to sync across all devices.</p>
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="w-full md:w-1/2">
+                            <input type="text" id="video-url-input" placeholder="e.g. https://www.example.com/ssb.mp4" class="glass-input w-full p-4 rounded-lg text-sm mb-4">
+                            <button onclick="saveVideoSettings()" class="w-full bg-gradient-to-r from-[#00f2fe] to-blue-600 hover:scale-105 text-white font-bold py-3 rounded-lg transition-all shadow-[0_0_15px_rgba(0,242,254,0.4)]">Sync Video to Cloud</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-live" class="tab-content hidden h-full flex flex-col animate-fade-in"><div class="glass-panel flex-1 flex flex-col overflow-hidden"><div class="bg-black/40 p-3 flex justify-between items-center border-b border-gray-600 shrink-0"><span class="text-sm font-bold text-gray-300 tracking-widest"><i class="fas fa-desktop text-[#00f2fe] mr-2"></i> LIVE WEBSITE</span><button onclick="document.getElementById('live-frame').contentWindow.location.reload();" class="text-gray-400 hover:text-white px-3 py-1 bg-white/10 rounded">Refresh</button></div><iframe id="live-frame" src="index.html" class="w-full h-full bg-white border-none"></iframe></div></div>
+        </main>
+    </div>
+
+    <div id="detailModal" class="modal-overlay" onclick="closeModal(event)"><div class="glass-panel p-8 w-full max-w-lg relative bg-gray-900 shadow-2xl" onclick="event.stopPropagation()"><button onclick="document.getElementById('detailModal').style.display='none'" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl"><i class="fas fa-times"></i></button><h2 id="modal-title" class="text-2xl font-black text-white mb-6 border-b border-gray-600 pb-2">Details</h2><div id="modal-content" class="flex flex-col gap-4 text-gray-300"></div></div></div>
+
+    <div id="addProductModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="glass-panel p-6 w-full max-w-4xl relative bg-gray-900 shadow-2xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <button onclick="document.getElementById('addProductModal').style.display='none'" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl"><i class="fas fa-times"></i></button>
+            <h2 id="addProductModalTitle" class="text-2xl font-black text-white mb-4 border-b border-[#a855f7] pb-2"><i class="fas fa-plus-circle text-[#a855f7] mr-2"></i> Add Cloud Product</h2>
+            
+            <form onsubmit="saveProduct(event)" class="flex flex-col gap-4">
+                <input type="hidden" id="editing-id" value="">
+                
+                <div class="flex gap-4">
+                    <div class="w-1/4"><label class="text-xs text-gray-400 font-bold mb-1 block">SKU (Code) *</label><input type="text" id="new-prod-sku" required class="glass-input w-full p-2.5 rounded-lg text-sm" placeholder="e.g. SSB-101"></div>
+                    <div class="flex-1"><label class="text-xs text-gray-400 font-bold mb-1 block">Product Name *</label><input type="text" id="new-prod-name" required class="glass-input w-full p-2.5 rounded-lg text-sm" placeholder="e.g. Zubara L40 Diaper"></div>
+                    <div class="w-1/3"><label class="text-xs text-gray-400 font-bold mb-1 block">Brand *</label><select id="new-prod-brand-select" class="glass-input w-full p-2.5 rounded-lg text-sm bg-gray-800" onchange="checkNewBrand(this.value)"></select><input type="text" id="new-prod-brand-new" class="glass-input w-full p-2.5 rounded-lg text-sm mt-2 hidden border-[#a855f7]" placeholder="New brand..."></div>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-lg flex flex-col gap-3">
+                    <div class="flex justify-between items-center"><h4 class="text-sm font-bold text-blue-400"><i class="fas fa-layer-group mr-2"></i> Wholesale Pricing Tiers</h4>
+                    <div class="w-1/3"><label class="text-xs text-green-400 font-bold mb-1 block">Available Stock (Units) *</label><input type="number" id="new-prod-stock" required class="glass-input w-full p-2.5 rounded-lg text-sm border-green-500/50" value="100" min="0"></div></div>
+                    <div class="flex gap-4">
+                        <div class="flex-1 bg-black/40 p-3 rounded"><label class="text-xs text-gray-400 font-bold mb-1 block">Tier 1: Base Price (1+ Pcs) *</label><input type="number" id="new-prod-t1-price" required class="glass-input w-full p-2 rounded text-sm" placeholder="Rs. Base Price"></div>
+                        <div class="flex-1 bg-black/40 p-3 rounded"><label class="text-xs text-gray-400 font-bold mb-1 block text-yellow-400">Tier 2: Mid Wholesale</label><div class="flex gap-2"><input type="number" id="new-prod-t2-qty" class="glass-input w-1/2 p-2 rounded text-sm" placeholder="Min Qty"><input type="number" id="new-prod-t2-price" class="glass-input w-1/2 p-2 rounded text-sm" placeholder="Rs. Price"></div></div>
+                        <div class="flex-1 bg-black/40 p-3 rounded"><label class="text-xs text-gray-400 font-bold mb-1 block text-green-400">Tier 3: Master Wholesale</label><div class="flex gap-2"><input type="number" id="new-prod-t3-qty" class="glass-input w-1/2 p-2 rounded text-sm" placeholder="Min Qty"><input type="number" id="new-prod-t3-price" class="glass-input w-1/2 p-2 rounded text-sm" placeholder="Rs. Price"></div></div>
+                    </div>
+                </div>
+
+                <div class="bg-green-500/10 border border-green-500/30 p-4 rounded-lg flex flex-col md:flex-row gap-4">
+                    <div class="flex-1"><h4 class="text-sm font-bold text-green-400 mb-3"><i class="fas fa-tags mr-2"></i> Wholesale Offer Setup</h4><div class="flex gap-2"><select id="new-prod-offer-type" class="glass-input flex-1 p-2.5 rounded-lg text-sm bg-gray-800" onchange="toggleOfferFields()"><option value="none">No Special Offer</option><option value="free_item">Buy X, Get Y Free</option><option value="percent_off">Buy X, Get Y% Off</option></select><input type="number" id="new-prod-offer-x" class="glass-input w-16 p-2.5 rounded-lg text-sm bg-gray-800" placeholder="X" disabled><input type="number" id="new-prod-offer-y" class="glass-input w-16 p-2.5 rounded-lg text-sm bg-gray-800" placeholder="Y" disabled></div></div>
+                    <div class="w-48 border-l border-green-500/30 pl-4"><h4 class="text-sm font-bold text-yellow-400 mb-3">Pack Size (Min Qty)</h4><input type="number" id="new-prod-packqty" required class="glass-input w-full p-2.5 rounded-lg text-sm border-yellow-500/50" value="1" min="1" placeholder="e.g. 6"></div>
+                </div>
+
+                <div class="bg-gray-800/50 border border-gray-600 p-4 rounded-lg">
+                    <h4 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-images mr-2"></i> Image Links / Folder Paths (Best for Cloud)</h4>
+                    <p class="text-[10px] text-yellow-400 font-bold mb-3">Paste direct Image URLs here. This prevents database overload!</p>
+                    <div class="flex flex-col gap-3">
+                        <div><label class="text-xs text-gray-400 font-bold mb-1 block">Main Image 1 *</label><input type="text" id="new-prod-img-1" required class="glass-input w-full p-2 rounded text-sm border-yellow-500/50" placeholder="e.g. https://..."></div>
+                        <div><label class="text-xs text-gray-400 font-bold mb-1 block">Image 2 (Optional for Gallery)</label><input type="text" id="new-prod-img-2" class="glass-input w-full p-2 rounded text-sm" placeholder="e.g. https://..."></div>
+                        <div><label class="text-xs text-gray-400 font-bold mb-1 block">Image 3 (Optional for Gallery)</label><input type="text" id="new-prod-img-3" class="glass-input w-full p-2 rounded text-sm" placeholder="e.g. https://..."></div>
+                    </div>
+                </div>
+
+                <div><label class="text-xs text-gray-400 font-bold mb-1 block">Description</label><textarea id="new-prod-desc" rows="2" class="glass-input w-full p-2.5 rounded-lg text-sm" placeholder="Details..."></textarea></div>
+                <button type="submit" id="save-product-btn" class="w-full bg-[#a855f7] hover:bg-purple-600 text-white font-bold py-3 rounded-lg mt-2 shadow-lg"><i class="fas fa-cloud-upload-alt mr-2"></i> Push to Cloud Database</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // YOUR EXACT FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyAwXH8HT4XRdbPG4HVE1aiAonH6MoDwOSM",
+            authDomain: "ssb-delivery-ad6d5.firebaseapp.com",
+            projectId: "ssb-delivery-ad6d5",
+            storageBucket: "ssb-delivery-ad6d5.firebasestorage.app",
+            messagingSenderId: "1002588946582",
+            appId: "1:1002588946582:web:193deabf5ec9e3e50b02b7",
+            measurementId: "G-NMWRY0GQH7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // GLOBAL DATA ARRAYS
+        let globalProducts = [];
+        let globalOrders = [];
+        let globalReviews = [];
+
+        // 🌟 1. AUTHENTICATION & PRIVACY SYSTEM 🌟
+        let isSignupMode = false;
+        
+        window.toggleAuthMode = function() {
+            isSignupMode = !isSignupMode;
+            document.getElementById('login-title').innerText = isSignupMode ? "Create Pro Admin" : "Admin Login";
+            document.getElementById('auth-btn').innerText = isSignupMode ? "Register Key" : "Secure Login";
+            document.querySelector('#login-screen p[onclick]').innerHTML = isSignupMode ? 'Have a key? <span class="text-[#00f2fe] font-bold">Login Here</span>' : 'First time? <span class="text-[#00f2fe] font-bold">Create Admin Account</span>';
+        }
+
+        window.handleAuth = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const pass = document.getElementById('admin-pass').value;
+            const msgEl = document.getElementById('error-msg');
+            msgEl.classList.add('hidden');
+            document.getElementById('auth-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            if(isSignupMode) {
+                createUserWithEmailAndPassword(auth, email, pass).catch(err => { msgEl.innerText = err.message; msgEl.classList.remove('hidden'); document.getElementById('auth-btn').innerText = "Register Key"; });
+            } else {
+                signInWithEmailAndPassword(auth, email, pass).catch(err => { msgEl.innerText = err.message; msgEl.classList.remove('hidden'); document.getElementById('auth-btn').innerText = "Secure Login"; });
+            }
+        }
+
+        window.logoutAdmin = function() { signOut(auth); }
+
+        window.changeAdminPassword = function() {
+            const newPass = document.getElementById('new-admin-pass').value;
+            const msgEl = document.getElementById('pass-msg');
+            if(newPass.length < 6) { msgEl.innerText = "Must be at least 6 chars!"; msgEl.className = "text-xs font-bold mt-2 text-red-400"; return; }
+            
+            const user = auth.currentUser;
+            if(user) {
+                updatePassword(user, newPass).then(() => {
+                    msgEl.innerText = "Password securely updated!"; msgEl.className = "text-xs font-bold mt-2 text-green-400";
+                    document.getElementById('new-admin-pass').value = '';
+                }).catch((error) => { msgEl.innerText = error.message; msgEl.className = "text-xs font-bold mt-2 text-red-400"; });
+            }
+        }
+
+        // Auth Listener - Protects Dashboard
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                document.getElementById('admin-dashboard').classList.add('flex');
+                fetchCloudData(); // Start real-time sync
+            } else {
+                document.getElementById('admin-dashboard').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.remove('flex');
+                document.getElementById('login-screen').style.display = 'block';
+                document.getElementById('auth-btn').innerText = "Secure Login";
+            }
+        });
+
+        // 🌟 2. REAL-TIME DATABASE SYNC 🌟
+        function fetchCloudData() {
+            // Products
+            onSnapshot(collection(db, "products"), (snapshot) => {
+                globalProducts = [];
+                snapshot.forEach(doc => { globalProducts.push({ id: doc.id, ...doc.data() }); });
+                document.getElementById('stat-products').innerText = globalProducts.length;
+                renderInventory(globalProducts);
+                updateDashboardCharts(globalOrders, globalProducts);
+            });
+
+            // Orders
+            onSnapshot(collection(db, "orders"), (snapshot) => {
+                globalOrders = []; let rev = 0;
+                snapshot.forEach(doc => { 
+                    let o = { id_doc: doc.id, ...doc.data() }; globalOrders.push(o); 
+                    if(o.status !== 'Cancelled') rev += o.total;
+                });
+                document.getElementById('stat-orders').innerText = globalOrders.length;
+                document.getElementById('stat-revenue').innerText = "Rs. " + rev;
+                renderOrders(globalOrders);
+                updateDashboardCharts(globalOrders, globalProducts);
+            });
+
+            // Reviews
+            onSnapshot(collection(db, "reviews"), (snapshot) => {
+                globalReviews = []; let totalC = 0;
+                snapshot.forEach(doc => { globalReviews.push({ id_doc: doc.id, ...doc.data() }); totalC++; });
+                document.getElementById('stat-reviews').innerText = totalC;
+                renderComments(globalReviews);
+            });
+            
+            // Settings (Video)
+            onSnapshot(doc(db, "settings", "main"), (doc) => {
+                if(doc.exists() && doc.data().videoUrl) {
+                    document.getElementById('admin-video-preview').src = doc.data().videoUrl;
+                    document.getElementById('video-url-input').value = doc.data().videoUrl;
+                }
+            });
+        }
+
+        // 🌟 3. PRODUCT MANAGEMENT (CRUD) 🌟
+        window.openAddProductModal = function(isEditing = false, id = null) {
+            let uniqueBrands = [...new Set(globalProducts.map(p => p.company))];
+            let select = document.getElementById('new-prod-brand-select'); let html = '<option value="" disabled selected>Select Category</option>'; uniqueBrands.forEach(b => html += `<option value="${b}">${b}</option>`); html += '<option value="NEW_BRAND" class="text-[#a855f7]">➕ Add New...</option>'; select.innerHTML = html;
+            window.checkNewBrand = function(val) { 
+    let newBrandInput = document.getElementById('new-prod-brand-new'); 
+    if(val === 'NEW_BRAND') { 
+        newBrandInput.classList.remove('hidden'); 
+        newBrandInput.required = true; 
+    } else { 
+        newBrandInput.classList.add('hidden'); 
+        newBrandInput.required = false; 
+    } 
+};
+            if(!isEditing) { 
+                document.getElementById('editing-id').value = ""; document.getElementById('addProductModalTitle').innerHTML = '<i class="fas fa-plus-circle text-[#a855f7] mr-2"></i> Add Cloud Product'; document.getElementById('save-product-btn').innerHTML = '<i class="fas fa-cloud-upload-alt mr-2"></i> Push to Cloud'; 
+                document.getElementById('new-prod-sku').value = 'SSB-' + Math.floor(Math.random() * 9000); document.getElementById('new-prod-name').value = ''; document.getElementById('new-prod-stock').value = '100'; document.getElementById('new-prod-t1-price').value = ''; document.getElementById('new-prod-t2-qty').value = ''; document.getElementById('new-prod-t2-price').value = ''; document.getElementById('new-prod-t3-qty').value = ''; document.getElementById('new-prod-t3-price').value = ''; document.getElementById('new-prod-packqty').value = '1'; document.getElementById('new-prod-offer-type').value = 'none'; toggleOfferFields(); document.getElementById('new-prod-desc').value = ''; document.getElementById('new-prod-brand-new').classList.add('hidden'); 
+                document.getElementById('new-prod-img-1').value = ''; document.getElementById('new-prod-img-2').value = ''; document.getElementById('new-prod-img-3').value = ''; 
+            } else {
+                let p = globalProducts.find(x => x.id === id);
+                document.getElementById('editing-id').value = id; document.getElementById('addProductModalTitle').innerHTML = '<i class="fas fa-edit text-[#a855f7] mr-2"></i> Edit Cloud Product'; document.getElementById('save-product-btn').innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Update in Cloud';
+                document.getElementById('new-prod-sku').value = p.sku; document.getElementById('new-prod-name').value = p.name; document.getElementById('new-prod-stock').value = p.stock;
+                document.getElementById('new-prod-t1-price').value = p.t1p || p.mrp; document.getElementById('new-prod-t2-qty').value = p.t2q || ''; document.getElementById('new-prod-t2-price').value = p.t2p || ''; document.getElementById('new-prod-t3-qty').value = p.t3q || ''; document.getElementById('new-prod-t3-price').value = p.t3p || ''; document.getElementById('new-prod-packqty').value = p.packQty || 1;
+                document.getElementById('new-prod-offer-type').value = p.offerType || 'none'; document.getElementById('new-prod-offer-x').value = p.offerX || 0; document.getElementById('new-prod-offer-y').value = p.offerY || 0; toggleOfferFields();
+                document.getElementById('new-prod-desc').value = p.desc || '';
+                if(Array.from(select.options).some(opt => opt.value === p.company)) { select.value = p.company; } else { select.value = 'NEW_BRAND'; document.getElementById('new-prod-brand-new').value = p.company; document.getElementById('new-prod-brand-new').classList.remove('hidden'); }
+                document.getElementById('new-prod-img-1').value = p.images && p.images[0] ? p.images[0] : ''; document.getElementById('new-prod-img-2').value = p.images && p.images[1] ? p.images[1] : ''; document.getElementById('new-prod-img-3').value = p.images && p.images[2] ? p.images[2] : '';
+            }
+            document.getElementById('addProductModal').style.display = 'flex';
+        }
+
+        window.saveProduct = async function(e) {
+            e.preventDefault(); 
+            document.getElementById('save-product-btn').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Syncing...';
+            let editId = document.getElementById('editing-id').value;
+            
+            let imagesArr = [document.getElementById('new-prod-img-1').value.trim(), document.getElementById('new-prod-img-2').value.trim(), document.getElementById('new-prod-img-3').value.trim()].filter(img => img !== "");
+            let selectedBrand = document.getElementById('new-prod-brand-select').value; let finalBrand = selectedBrand === 'NEW_BRAND' ? document.getElementById('new-prod-brand-new').value : selectedBrand;
+            
+            let productData = { 
+                sku: document.getElementById('new-prod-sku').value, name: document.getElementById('new-prod-name').value, company: finalBrand, 
+                stock: parseInt(document.getElementById('new-prod-stock').value) || 0, t1p: parseFloat(document.getElementById('new-prod-t1-price').value), 
+                t2q: parseInt(document.getElementById('new-prod-t2-qty').value) || null, t2p: parseFloat(document.getElementById('new-prod-t2-price').value) || null, 
+                t3q: parseInt(document.getElementById('new-prod-t3-qty').value) || null, t3p: parseFloat(document.getElementById('new-prod-t3-price').value) || null, 
+                packQty: parseInt(document.getElementById('new-prod-packqty').value) || 1, offerType: document.getElementById('new-prod-offer-type').value, 
+                offerX: parseInt(document.getElementById('new-prod-offer-x').value) || 0, offerY: parseInt(document.getElementById('new-prod-offer-y').value) || 0, 
+                desc: document.getElementById('new-prod-desc').value, images: imagesArr 
+            };
+            
+            if(editId === "") { await addDoc(collection(db, "products"), productData); } 
+            else { await updateDoc(doc(db, "products", editId), productData); }
+            
+            document.getElementById('addProductModal').style.display = 'none'; e.target.reset();
+        }
+
+        window.deleteProduct = async function(id) { if(confirm("Permanently delete from Cloud?")) { await deleteDoc(doc(db, "products", id)); } }
+
+        function renderInventory(products) {
+            const list = document.getElementById('inventory-list'); if(products.length === 0) { list.innerHTML = '<p class="text-gray-500">No cloud products.</p>'; return; } let html = '';
+            products.forEach(p => {
+                let img = p.images && p.images.length > 0 ? p.images[0] : ''; let offerBadge = ''; if(p.offerType === 'free_item' && p.offerX > 0) offerBadge = `<span class="text-[10px] bg-green-500/20 text-green-400 px-1 rounded block w-max mt-1">Buy ${p.offerX} Get ${p.offerY} Free</span>`; else if(p.offerType === 'percent_off' && p.offerX > 0) offerBadge = `<span class="text-[10px] bg-blue-500/20 text-blue-400 px-1 rounded block w-max mt-1">Buy ${p.offerX} Get ${p.offerY}% Off</span>`;
+                html += `<div class="bg-gray-800/60 rounded-xl border border-gray-600 overflow-hidden flex flex-col hover:border-[#a855f7]/50 shadow-lg"><div class="h-32 bg-white/5 relative flex items-center justify-center p-2"><img src="${img}" class="max-h-full object-contain drop-shadow-lg" onerror="this.src='https://via.placeholder.com/150'"><span class="absolute top-2 right-2 bg-black/70 text-xs px-2 py-0.5 rounded text-gray-300 border border-gray-500">${p.company}</span><span class="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">Stock: ${p.stock}</span></div><div class="p-3 flex flex-col flex-1"><p class="text-[10px] text-gray-400 mb-1">SKU: ${p.sku}</p><h4 class="text-sm font-bold text-white mb-1 truncate">${p.name}</h4><p class="text-[#a855f7] font-black text-sm mb-2">Base: Rs. ${p.t1p || p.mrp}</p>${offerBadge}<div class="flex gap-2 mt-auto pt-3"><button onclick="openAddProductModal(true, '${p.id}')" class="flex-1 text-xs bg-blue-500/10 hover:bg-blue-500/30 text-blue-400 py-1.5 rounded transition-colors"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${p.id}')" class="flex-1 text-xs bg-red-500/10 hover:bg-red-500/30 text-red-400 py-1.5 rounded transition-colors"><i class="fas fa-trash"></i></button></div></div></div>`;
+            }); list.innerHTML = html;
+        }
+
+        // 🌟 4. ORDER MANAGEMENT 🌟
+        function renderOrders(orders) {
+            const list = document.getElementById('order-list'); if (orders.length === 0) { list.innerHTML = '<p class="text-gray-500">No cloud orders yet.</p>'; return; } let html = '';
+            orders.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(order => {
+                let itemsHtml = order.items.map(i => `<li class="text-xs text-gray-400 py-1">${i.name} <span class="text-white float-right">x${i.qty}</span></li>`).join(''); let statusClass = `status-${order.status || 'Pending'}`;
+                let custInfo = order.customer ? `<div class="mb-3 p-3 bg-black/40 rounded-lg border border-gray-600"><p class="text-xs text-gray-400 mb-1"><i class="fas fa-user text-[#00f2fe] mr-2"></i><span class="text-white font-bold">${order.customer.name}</span></p><p class="text-xs text-gray-400 mb-1"><i class="fas fa-phone text-green-400 mr-2"></i><span class="text-white font-bold">${order.customer.phone}</span></p><p class="text-xs text-gray-400"><i class="fas fa-map-marker-alt text-red-400 mr-2"></i><span class="text-white">${order.customer.address}</span></p></div>` : '<div class="mb-3 p-3 bg-black/40 rounded-lg border border-gray-600 text-xs text-gray-500">No customer details.</div>';
+                html += `<div class="bg-gray-800/60 p-5 rounded-xl border border-gray-600 shadow-lg mb-4 flex flex-col h-full"><div class="flex justify-between items-start mb-4"><div><h4 class="font-black text-[#00f2fe]">${order.id}</h4><span class="text-[10px] text-gray-500">${order.date}</span></div><select onchange="updateOrderStatus('${order.id_doc}', this.value)" class="text-xs font-bold px-3 py-1.5 rounded-lg outline-none border ${statusClass} bg-gray-900"><option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>🔵 Pending</option><option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>🟢 Completed</option><option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>🔴 Cancelled</option></select></div>${custInfo}<div class="bg-black/30 p-3 rounded-lg mb-3 flex-1"><ul class="divide-y divide-gray-700/50">${itemsHtml}</ul></div><div class="flex justify-between items-end mt-auto border-t border-gray-700 pt-3"><span class="text-[10px] text-gray-400 bg-gray-900 px-2 py-1 rounded">${order.method}</span><span class="text-xl font-black text-white">Rs. ${order.total}</span></div></div>`;
+            }); list.innerHTML = html;
+        }
+        window.updateOrderStatus = async function(id, status) { await updateDoc(doc(db, "orders", id), { status: status }); }
+
+        // 🌟 5. REVIEWS 🌟
+        function renderComments(reviews) { 
+            const list = document.getElementById('comment-list'); let html = ''; 
+            reviews.forEach(rev => { html += `<div class="bg-gray-800/60 p-4 rounded-xl border border-gray-600 mb-3"><div class="flex justify-between mb-2"><span class="text-yellow-400 text-xs font-bold">${rev.productName}</span><button onclick="rejectComment('${rev.id_doc}')" class="text-red-400 text-xs hover:text-red-500"><i class="fas fa-trash"></i></button></div><div class="text-sm text-white font-bold">${rev.name} <span class="text-xs text-gray-500 font-normal">(${rev.email || 'No email'})</span></div><p class="text-[10px] text-gold mb-1">Rating: ${rev.rating} Stars</p><p class="text-sm text-gray-300 mt-1">"${rev.text}"</p></div>`; }); 
+            if(html==='') list.innerHTML='<p class="text-gray-500">No cloud reviews.</p>'; else list.innerHTML = html; 
+        }
+        window.rejectComment = async function(id) { if(confirm("Delete this review from Cloud?")) { await deleteDoc(doc(db, "reviews", id)); } }
+
+        // 🌟 6. SETTINGS (VIDEO URL) 🌟
+        window.saveVideoSettings = async function() {
+            let url = document.getElementById('video-url-input').value;
+            if(url) { await setDoc(doc(db, "settings", "main"), { videoUrl: url }, { merge: true }); alert("Cloud Video Updated!"); }
+        }
+
+        // CHARTS & UI HELPERS (Unchanged from original)
+        let isLightMode = false; window.toggleTheme = function() { isLightMode = !isLightMode; if(isLightMode) { document.body.classList.add('light-theme'); document.getElementById('theme-icon').className = "fas fa-moon text-indigo-600 text-xl"; } else { document.body.classList.remove('light-theme'); document.getElementById('theme-icon').className = "fas fa-sun text-yellow-400 text-xl"; } }
+        window.closeModal = function(e) { if(e.target.id === 'detailModal' || e.target.id === 'addProductModal') { document.getElementById('detailModal').style.display = 'none'; document.getElementById('addProductModal').style.display = 'none';} }
+        window.switchTab = function(tabId, btnElement) { document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden')); document.getElementById(tabId).classList.remove('hidden'); document.querySelectorAll('.menu-btn').forEach(btn => { btn.classList.remove('bg-[#00f2fe]/20', 'text-[#00f2fe]'); btn.classList.add('text-gray-300'); }); btnElement.classList.add('bg-[#00f2fe]/20', 'text-[#00f2fe]'); }
+        window.toggleOfferFields = function() { let type = document.getElementById('new-prod-offer-type').value; let xField = document.getElementById('new-prod-offer-x'); let yField = document.getElementById('new-prod-offer-y'); if(type === 'none') { xField.disabled = true; yField.disabled = true; xField.value = 0; yField.value = 0; xField.classList.add('bg-gray-800'); yField.classList.add('bg-gray-800'); } else { xField.disabled = false; yField.disabled = false; xField.classList.remove('bg-gray-800'); yField.classList.remove('bg-gray-800'); } }
+    </script>
+</body>
+</html>
