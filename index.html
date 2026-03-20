@@ -29,7 +29,8 @@
 
         #main-content { opacity: 0; display: none; }
         .glass-nav { backdrop-filter: blur(20px); transition: all 0.5s; z-index: 1000; }
-        html.dark .glass-nav { background: rgba(5, 11, 20, 0.85); border-bottom: 1px solid rgba(255,255,255,0.1); } html:not(.dark) .glass-nav { background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        html.dark .glass-nav { background: rgba(5, 11, 20, 0.85); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        html:not(.dark) .glass-nav { background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .typewriter-cursor { border-right: 3px solid #3b82f6; animation: blink 0.7s infinite; padding-right: 5px;} @keyframes blink { 50% { border-color: transparent; } }
 
         .hero-wrapper { position: relative; width: 100vw; min-height: 100vh; overflow: hidden; perspective: 1000px; display: flex; align-items: center;}
@@ -43,28 +44,23 @@
 
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; justify-content: center; align-items: center; backdrop-filter: blur(10px); } .modal-content { width: 100%; height: 100%; position: relative; overflow-y: auto; overflow-x: hidden; } .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; color: #fff; cursor: pointer; transition: all 0.3s; z-index: 100005; background: rgba(0,0,0,0.3); width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; } .close-btn:hover { background: #ff5e62; }
         #galaxy-intro-overlay { position: absolute; inset: 0; background: #000; z-index: 100001; display: flex; justify-content: center; align-items: center; overflow: hidden; transition: opacity 0.8s ease; perspective: 1000px; } .hyperspace { position: absolute; width: 200vw; height: 200vh; background: radial-gradient(circle at center, transparent 20%, #3b82f6 40%, #22c55e 60%, #000 80%); background-size: 10% 10%; opacity: 0; animation: warpDrive 3s cubic-bezier(0.5, 0, 0.2, 1) forwards; } @keyframes warpDrive { 0% { transform: scale(0.1) rotate(0deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(15) rotate(180deg); opacity: 0; filter: blur(10px); } }
-
         .qty-btn { width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; background: #e5e7eb; color: #374151; font-weight: bold; cursor: pointer; transition: all 0.2s; border-radius: 4px; } .qty-btn:hover { background: #d1d5db; } html.dark .qty-btn { background: #374151; color: white; } html.dark .qty-btn:hover { background: #4b5563; }
         .tier-box { border: 2px solid transparent; transition: all 0.3s; cursor: pointer; } .tier-box.active { border-color: #3b82f6; background: rgba(59,130,246,0.1); }
-        .wish-icon { transition: transform 0.2s, color 0.2s; } .wish-icon:hover { transform: scale(1.2); } .wished { color: #ff5e62 !important; filter: drop-shadow(0 0 5px rgba(255, 94, 98, 0.5)); }
     </style>
 </head>
 <body>
 
     <div id="preloader"><div class="geo-box" id="geo-box"></div><div class="liquid-sphere" id="liquid-sphere"></div><div class="light-trail trail-left" id="trail-left"></div><div class="light-trail trail-right" id="trail-right"></div><div class="shockwave" id="shockwave"></div><div class="final-logo" id="final-logo"><h1 class="text-4xl md:text-6xl font-black text-white tracking-widest uppercase"><span class="text-transparent bg-clip-text bg-gradient-to-r from-ssbBlue to-ssbGreen">SSB</span> Brother</h1><p class="text-silverMix tracking-[0.5em] text-xs md:text-sm mt-2 font-bold">TRADING PVT. LTD.</p></div></div>
 
-    <div id="floating-cart" class="fixed bottom-6 right-6 z-[99999] flex flex-col gap-4 hidden">
-        <div class="bg-white dark:bg-slate-800 text-ssbRed p-3 rounded-full shadow-[0_0_15px_rgba(255,94,98,0.4)] cursor-pointer hover:scale-110 transition-transform" onclick="toggleWishlistModal()"><i class="fas fa-heart text-xl"></i><span id="wish-count" class="absolute -top-1 -right-1 bg-ssbRed text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full">0</span></div>
-        <div class="bg-ssbBlue text-white p-4 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.6)] cursor-pointer hover:scale-110 transition-transform" onclick="openCartModal()"><i class="fas fa-shopping-cart text-2xl"></i><span id="cart-count" class="absolute -top-2 -right-2 bg-ssbGreen text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-white">0</span></div>
+    <div id="floating-cart" class="fixed bottom-6 right-6 z-[99999] bg-ssbBlue text-white p-4 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.6)] cursor-pointer hover:scale-110 transition-transform hidden" onclick="openCartModal()">
+        <i class="fas fa-shopping-cart text-2xl"></i><span id="cart-count" class="absolute -top-2 -right-2 bg-ssbGreen text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-white">0</span>
     </div>
 
     <div id="main-content">
         <nav class="fixed w-full top-0 glass-nav">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
                 <div class="flex items-center gap-3"><div class="w-12 h-12 bg-gradient-to-br from-ssbBlue to-ssbGreen rounded-full flex items-center justify-center border border-white/20 shadow-lg"><span class="font-black text-white text-xl">SSB</span></div><span id="typewriter-text" class="text-lg md:text-2xl font-black tracking-tight text-dynamic uppercase typewriter-cursor"></span></div>
-                <div class="flex items-center gap-4">
-                    <span id="cloud-status" class="hidden md:inline text-[10px] bg-green-500/20 text-green-500 font-bold px-2 py-1 rounded border border-green-500/30"><i class="fas fa-cloud"></i> Synced</span>
-                    <button id="btn-lang" class="w-10 h-10 rounded-full border border-gray-500/50 flex items-center justify-center font-black text-xs text-dynamic hover:border-ssbBlue transition-all bg-black/5 dark:bg-white/5">EN</button><button id="btn-theme" class="w-10 h-10 rounded-full border border-gray-500/50 flex items-center justify-center text-dynamic hover:border-ssbBlue transition-all bg-black/5 dark:bg-white/5"><i id="icon-theme" class="fas fa-sun text-yellow-500"></i></button></div>
+                <div class="flex items-center gap-4"><button id="btn-lang" class="w-10 h-10 rounded-full border border-gray-500/50 flex items-center justify-center font-black text-xs text-dynamic hover:border-ssbBlue transition-all bg-black/5 dark:bg-white/5">EN</button><button id="btn-theme" class="w-10 h-10 rounded-full border border-gray-500/50 flex items-center justify-center text-dynamic hover:border-ssbBlue transition-all bg-black/5 dark:bg-white/5"><i id="icon-theme" class="fas fa-sun text-yellow-500"></i></button></div>
             </div>
         </nav>
 
@@ -84,7 +80,13 @@
         </section>
 
         <section class="py-20 relative z-10 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-transparent">
-            <div class="max-w-7xl mx-auto px-4"><div class="text-center mb-10"><h2 class="text-3xl font-black text-dynamic uppercase tracking-widest">Proud to announce with you</h2><div class="w-24 h-1.5 bg-gradient-to-r from-ssbBlue to-ssbGreen mx-auto rounded-full mt-4"></div></div><div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-black relative"><video id="promo-video" src="ssb.mp4" controls autoplay muted loop playsinline class="w-full h-auto aspect-video object-cover opacity-90 hover:opacity-100 transition-opacity admin-managed-video"></video><div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/20 text-gold px-4 py-2 rounded-lg font-black tracking-widest text-sm shadow-lg pointer-events-none">SSB BROTHER</div></div></div>
+            <div class="max-w-7xl mx-auto px-4"><div class="text-center mb-10"><h2 class="text-3xl font-black text-dynamic uppercase tracking-widest">Proud to announce with you</h2><div class="w-24 h-1.5 bg-gradient-to-r from-ssbBlue to-ssbGreen mx-auto rounded-full mt-4"></div></div><div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-black relative"><video src="ssb.mp4" controls autoplay muted loop playsinline class="w-full h-auto aspect-video object-cover opacity-90 hover:opacity-100 transition-opacity admin-managed-video"><iframe class="w-full h-full min-h-[400px] object-cover rounded-lg shadow-lg" 
+    src="https://www.youtube.com/embed/sNOXvUZnpSGAh1me?autoplay=1&mute=1&loop=1" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+</iframe>SSB BROTHER</div></div></div>
         </section>
 
         <section id="brands" class="py-20 relative z-10 border-t border-gray-200 dark:border-white/10">
@@ -92,7 +94,7 @@
                 <div class="text-center mb-10"><h2 class="text-4xl md:text-5xl font-black text-dynamic tracking-tight uppercase">Our <span class="text-ssbBlue">Products</span></h2></div>
                 <div class="max-w-2xl mx-auto mb-8 relative px-4"><div class="relative"><input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Search wholesale products (e.g. Diaper)..." class="w-full py-4 pl-12 pr-4 rounded-full bg-white dark:bg-white/10 border border-gray-300 dark:border-ssbBlue/50 text-dynamic outline-none shadow-md"><i class="fas fa-search absolute left-5 top-1/2 transform -translate-y-1/2 text-ssbBlue"></i></div></div>
                 <div class="w-full overflow-x-auto pb-4 mb-8 hide-scrollbar"><div id="category-buttons" class="flex justify-start gap-4 w-max mx-auto px-4"></div></div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8" id="iso-product-grid"><p class="text-center col-span-full text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i> Loading Cloud Data...</p></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8" id="iso-product-grid"></div>
             </div>
         </section>
 
@@ -111,7 +113,14 @@
     </div>
 
     <div id="surpriseModal" class="modal-overlay">
-        <div class="modal-content text-white relative bg-black"><div class="close-btn" onclick="closeModal('surpriseModal')"><i class="fas fa-times"></i></div><div id="galaxy-intro-overlay"><div class="hyperspace"></div><h2 class="z-10 text-5xl md:text-7xl font-black text-white uppercase tracking-widest animate-pulse text-center">Now You Going Near SSB Galaxy...</h2></div><div id="galaxy-content" class="w-full pt-20 px-4 pb-20 opacity-0 hidden min-h-screen" style="background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2000') no-repeat center center fixed; background-size: cover;"><h3 class="text-center text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-ssbBlue to-ssbGreen mb-12"><i class="fas fa-meteor text-ssbBlue"></i> Exclusive SSB Galaxy Deals</h3><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 max-w-[1400px] mx-auto" id="modalSurpriseGrid"></div></div></div>
+        <div class="modal-content text-white relative bg-black">
+            <div class="close-btn" onclick="closeModal('surpriseModal')"><i class="fas fa-times"></i></div>
+            <div id="galaxy-intro-overlay"><div class="hyperspace"></div><h2 class="z-10 text-5xl md:text-7xl font-black text-white uppercase tracking-widest animate-pulse text-center">Now You Going Near SSB Galaxy...</h2></div>
+            <div id="galaxy-content" class="w-full pt-20 px-4 pb-20 opacity-0 hidden min-h-screen" style="background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2000') no-repeat center center fixed; background-size: cover;">
+                <h3 class="text-center text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-ssbBlue to-ssbGreen mb-12"><i class="fas fa-meteor text-ssbBlue"></i> Exclusive SSB Galaxy Deals</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 max-w-[1400px] mx-auto" id="modalSurpriseGrid"></div>
+            </div>
+        </div>
     </div>
 
     <div id="productDetailModal" class="modal-overlay">
@@ -121,42 +130,61 @@
                 <div class="w-full md:w-5/12 p-6 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-900 flex flex-col items-center justify-start relative">
                     <img id="main-detail-img" src="" class="w-full h-[350px] object-contain bg-white dark:bg-black/20 rounded-lg border dark:border-gray-700 p-2 shadow-inner">
                     <div id="detail-discount-tag" class="absolute top-8 right-8 bg-red-500 text-white text-sm font-black px-3 py-1 rounded animate-pulse hidden"></div>
-                    <div id="gallery-thumbnails" class="flex gap-3 mt-4 w-full justify-center overflow-x-auto pb-2 hide-scrollbar"></div>
+                    <div id="gallery-thumbnails" class="flex gap-3 mt-4 w-full justify-center overflow-x-auto pb-2"></div>
                 </div>
 
                 <div class="w-full md:w-7/12 p-6 flex flex-col lg:flex-row gap-6">
                     <div class="flex-1 flex flex-col">
-                        <div class="flex items-center justify-between mb-2"><h2 id="detail-name" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white leading-tight">Product Name</h2><button id="modal-wishlist-btn" class="wish-icon text-gray-300 dark:text-gray-600 text-2xl" onclick="toggleWishlistModalProduct()"><i class="fas fa-heart"></i></button></div>
-                        <div class="flex items-center gap-3 mb-2 text-sm border-b pb-2 border-gray-200 dark:border-gray-700 flex-wrap"><span id="detail-sku" class="text-[10px] bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300">SKU: ---</span><div class="text-gold flex" id="detail-avg-stars"></div><span class="text-xs text-gray-400 font-bold" id="detail-review-count">(0 Reviews)</span><span class="text-gray-400">|</span> Brand: <span id="detail-company" class="text-ssbBlue font-bold">Company</span><span id="detail-stock-badge" class="text-[10px] bg-green-100 text-green-600 px-2 py-1 rounded font-bold ml-auto uppercase">In Stock</span></div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h2 id="detail-name" class="text-2xl font-bold text-gray-800 dark:text-white leading-tight">Product Name</h2>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2 text-sm border-b pb-2 border-gray-200 dark:border-gray-700 flex-wrap">
+                            <span id="detail-sku" class="text-[10px] bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300">SKU: ---</span>
+                            <div class="text-gold flex" id="detail-avg-stars"></div>
+                            <span class="text-xs text-gray-400 font-bold" id="detail-review-count">(0 Reviews)</span>
+                            <span class="text-gray-400">|</span> Brand: <span id="detail-company" class="text-ssbBlue font-bold">Company</span>
+                        </div>
                         <p id="detail-desc" class="text-sm text-gray-600 dark:text-gray-300 mb-4 mt-2">Description here.</p>
                         
                         <div class="flex gap-2 mb-4" id="pricing-tiers-container"></div>
 
                         <div class="mb-4 bg-green-50 dark:bg-green-500/10 p-4 rounded-lg border border-green-200 dark:border-green-500/30 flex justify-between items-center">
                             <div><p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Payable</p><div class="flex items-end gap-3 mb-1"><p class="text-4xl font-black text-ssbGreen">Rs. <span id="detail-price">0</span></p><p class="text-gray-500 text-sm line-through mb-1 hidden" id="detail-old-price-container">Rs. <span id="detail-old-price">0</span></p></div></div>
-                            <p id="wholesale-offer-msg" class="text-xs font-bold text-green-600 dark:text-green-400 mt-2 hidden bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded inline-block shadow-sm text-right max-w-[150px]"></p>
+                            <p id="wholesale-offer-msg" class="text-xs font-bold text-green-600 dark:text-green-400 mt-2 hidden bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded shadow-sm text-right max-w-[150px]"></p>
                         </div>
 
                         <div class="mb-6 flex flex-col gap-2 bg-gray-50 dark:bg-black/30 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <div class="flex items-center justify-between"><span class="text-sm text-gray-600 dark:text-gray-300 font-bold">Select Quantity:</span><div class="flex items-center gap-1 bg-white dark:bg-gray-800 p-1 rounded border border-gray-200 dark:border-gray-600"><button class="qty-btn" onclick="updateQty(-1)"><i class="fas fa-minus"></i></button><input type="text" id="product-qty" value="1" readonly class="w-12 h-8 text-center bg-transparent text-dynamic outline-none font-black text-lg"><button class="qty-btn" onclick="updateQty(1)"><i class="fas fa-plus"></i></button></div></div>
-                            <p id="min-qty-warning" class="text-[10px] text-gray-500 italic mt-1 text-center hidden"></p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600 dark:text-gray-300 font-bold">Select Quantity:</span>
+                                <div class="flex items-center gap-1 bg-white dark:bg-gray-800 p-1 rounded border border-gray-200 dark:border-gray-600">
+                                    <button class="qty-btn" onclick="updateQty(-1)"><i class="fas fa-minus"></i></button>
+                                    <input type="text" id="product-qty" value="1" readonly class="w-12 h-8 text-center bg-transparent text-dynamic outline-none font-black text-lg">
+                                    <button class="qty-btn" onclick="updateQty(1)"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <p id="min-qty-warning" class="text-xs text-red-500 dark:text-red-400 font-bold mt-1 text-center hidden"></p>
                         </div>
 
                         <div class="flex gap-3 mt-auto">
-                            <button class="flex-1 bg-ssbBlue text-white py-3 rounded-lg text-sm font-bold shadow-md hover:bg-blue-600 transition-colors" onclick="addCurrentToCart(true)">Buy Now</button>
-                            <button class="flex-1 bg-ssbGreen text-white py-3 rounded-lg text-sm font-bold shadow-md hover:bg-green-600 transition-colors" onclick="addCurrentToCart(false)"><i class="fas fa-cart-plus mr-1"></i> Add to Cart</button>
+                            <button class="flex-1 bg-ssbBlue text-white py-3 rounded-lg text-sm font-bold shadow-md hover:bg-blue-600" onclick="addCurrentToCart(true)">Buy Now</button>
+                            <button class="flex-1 bg-ssbGreen text-white py-3 rounded-lg text-sm font-bold shadow-md hover:bg-green-600" onclick="addCurrentToCart(false)"><i class="fas fa-cart-plus mr-1"></i> Add to Cart</button>
                         </div>
                     </div>
                     
-                    <div class="w-full lg:w-64 bg-gray-50 dark:bg-black/20 p-4 rounded-lg border border-gray-200 dark:border-gray-700 text-sm h-fit text-gray-800 dark:text-white mt-auto">
-                        <div class="flex justify-between items-center mb-3"><h4 class="text-xs text-gray-500 font-bold uppercase tracking-wider">Delivery Details</h4></div>
-                        <div class="bg-white dark:bg-black/40 p-3 rounded-lg border border-gray-200 dark:border-gray-600 mb-3 shadow-sm">
+                    <div class="w-full lg:w-64 bg-gray-50 dark:bg-black/20 p-4 rounded-lg border border-gray-200 dark:border-gray-700 text-sm h-fit text-gray-800 dark:text-white">
+                        <div class="flex justify-between items-center mb-4"><h4 class="text-xs text-gray-500 font-bold uppercase tracking-wider">Delivery Details</h4></div>
+                        <div class="bg-white dark:bg-black/40 p-3 rounded-lg border border-gray-200 dark:border-gray-600 mb-4 shadow-sm">
                             <p class="text-xs text-gray-600 dark:text-gray-400 font-bold mb-2"><i class="fas fa-store text-ssbBlue mr-1"></i>From: S.S.B. Brothers, KTM</p>
-                            <div class="flex gap-1 border-t border-gray-200 dark:border-gray-700 pt-2 mt-2"><input type="text" id="pincode-input" placeholder="City/Zip" class="w-full p-1.5 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-xs outline-none focus:border-ssbBlue"><button onclick="checkManualDelivery()" class="bg-ssbBlue text-white px-3 rounded text-xs font-bold hover:bg-blue-600">Check</button></div>
-                            <button onclick="calculateDeliveryGPS()" class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-dynamic py-1.5 rounded text-xs font-bold transition-colors flex items-center justify-center gap-1 mt-1"><i class="fas fa-location-arrow text-ssbBlue"></i> Auto GPS</button>
-                            <div id="gps-result" class="text-[10px] font-bold text-center mt-1 h-4"></div>
+                            <div class="flex flex-col gap-2 border-t border-gray-200 dark:border-gray-700 pt-3">
+                                <span class="text-[10px] text-gray-500 font-bold">Check Delivery Fee:</span>
+                                <div class="flex gap-1"><input type="text" id="pincode-input" placeholder="City or Zip" class="w-full p-1.5 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-xs outline-none focus:border-ssbBlue"><button onclick="checkManualDelivery()" class="bg-ssbBlue text-white px-2 rounded text-xs font-bold hover:bg-blue-600">Check</button></div>
+                                <button onclick="calculateDeliveryGPS()" class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-dynamic py-1.5 rounded text-xs font-bold transition-colors flex items-center justify-center gap-1 mt-1"><i class="fas fa-location-arrow text-ssbBlue"></i> Auto GPS</button>
+                                <div id="gps-result" class="text-[10px] font-bold text-center mt-1 h-4"></div>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between"><div class="flex items-center gap-2"><i class="fas fa-money-bill-wave text-green-500"></i><p id="detail-payment-option" class="font-bold text-gray-800 dark:text-gray-300 text-xs">COD Available</p></div><div class="flex items-center gap-2"><i class="fas fa-undo text-gray-400"></i><p class="font-bold text-gray-800 dark:text-gray-300 text-xs">0 Days Returns</p></div></div>
+                        <div class="flex items-center gap-3 mb-2"><i class="fas fa-money-bill-wave text-green-500"></i><p id="detail-payment-option" class="font-bold text-gray-800 dark:text-gray-300 text-xs">Cash on Delivery Available</p></div>
+                        <div class="flex justify-between items-center mb-2 border-t border-gray-200 pt-4 dark:border-gray-700 mt-4"><h4 class="text-xs text-gray-500 font-bold uppercase">Return & Warranty</h4></div>
+                        <div class="flex items-center gap-3 mb-2"><i class="fas fa-undo text-gray-400"></i><p class="font-bold text-gray-800 dark:text-gray-300 text-xs">0 Days Free Returns</p></div>
                     </div>
                 </div>
             </div>
@@ -164,7 +192,7 @@
             <div class="w-full p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800/50 mt-auto">
                 <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4"><i class="fas fa-comments text-ssbBlue mr-2"></i>Customer Reviews</h3>
                 <div class="mb-6 bg-white dark:bg-slate-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-                    <div class="flex items-center gap-2 mb-3" id="star-selector"><span class="text-sm text-gray-600 dark:text-gray-300 font-bold mr-2">Rate:</span><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110 transition-transform" onclick="setRating(1)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110 transition-transform" onclick="setRating(2)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110 transition-transform" onclick="setRating(3)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110 transition-transform" onclick="setRating(4)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110 transition-transform" onclick="setRating(5)"></i><input type="hidden" id="review-rating" value="5"></div>
+                    <div class="flex items-center gap-2 mb-3" id="star-selector"><span class="text-sm text-gray-600 dark:text-gray-300 font-bold mr-2">Rate:</span><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110" onclick="setRating(1)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110" onclick="setRating(2)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110" onclick="setRating(3)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110" onclick="setRating(4)"></i><i class="fas fa-star text-gold cursor-pointer text-lg hover:scale-110" onclick="setRating(5)"></i><input type="hidden" id="review-rating" value="5"></div>
                     <div class="flex flex-col sm:flex-row gap-3"><input type="text" id="reviewer-name" placeholder="Your Name" class="w-full sm:w-1/4 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/20 text-dynamic text-sm outline-none"><input type="email" id="reviewer-email" placeholder="Your Email" class="w-full sm:w-1/3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/20 text-dynamic text-sm outline-none"><input type="text" id="review-text" placeholder="Comment..." class="w-full flex-1 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/20 text-dynamic text-sm outline-none"><button onclick="submitProductReview()" class="bg-ssbBlue text-white font-bold py-2 px-6 rounded text-sm">Post</button></div>
                 </div>
                 <div id="reviews-list" class="space-y-3 max-h-60 overflow-y-auto hide-scrollbar"></div>
@@ -172,19 +200,13 @@
         </div>
     </div>
 
-    <div id="wishlistModal" class="modal-overlay">
-        <div class="bg-white dark:bg-slate-900 w-full max-w-lg mx-auto mt-10 rounded-2xl border border-gray-300 dark:border-ssbBlue p-6 relative flex flex-col max-h-[85vh]">
-            <div class="absolute top-4 right-4 text-xl text-gray-800 dark:text-white cursor-pointer hover:text-red-500" onclick="closeModal('wishlistModal')"><i class="fas fa-times"></i></div>
-            <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2"><i class="fas fa-heart text-ssbRed"></i> Your Wishlist</h2>
-            <div id="wishlist-items-container" class="flex-1 overflow-y-auto pr-2 space-y-3 hide-scrollbar"></div>
-        </div>
-    </div>
-
     <div id="cartModal" class="modal-overlay">
         <div class="bg-white dark:bg-slate-900 w-full max-w-lg mx-auto mt-10 rounded-2xl border border-gray-300 dark:border-ssbBlue p-6 relative flex flex-col max-h-[85vh]">
             <div class="absolute top-4 right-4 text-xl text-gray-800 dark:text-white cursor-pointer hover:text-red-500" onclick="closeModal('cartModal')"><i class="fas fa-times"></i></div>
             <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2"><i class="fas fa-shopping-cart text-ssbBlue"></i> Your Cart</h2>
+            
             <div id="cart-items-container" class="flex-1 overflow-y-auto pr-2 space-y-3 hide-scrollbar"></div>
+            
             <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2"><span>Subtotal:</span><span>Rs. <span id="cart-subtotal">0</span></span></div>
                 <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2"><span>Estimated Delivery:</span><span>Rs. <span id="cart-delivery-cost">50</span></span></div>
@@ -192,65 +214,56 @@
                 
                 <div class="my-4 border-t border-gray-200 dark:border-gray-700 py-3">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-3"><i class="fas fa-map-marker-alt text-ssbRed mr-1"></i> Delivery Information:</h3>
-                    <div class="flex flex-col gap-3"><input type="text" id="cust-name" placeholder="Full Name *" required class="w-full p-2.5 rounded bg-gray-100 dark:bg-black/30 border border-gray-300 dark:border-gray-700 text-dynamic text-sm outline-none"><input type="tel" id="cust-phone" placeholder="Phone Number *" required class="w-full p-2.5 rounded bg-gray-100 dark:bg-black/30 border border-gray-300 dark:border-gray-700 text-dynamic text-sm outline-none"><textarea id="cust-address" placeholder="Detailed Delivery Address *" rows="2" required class="w-full p-2.5 rounded bg-gray-100 dark:bg-black/30 border border-gray-300 dark:border-gray-700 text-dynamic text-sm outline-none"></textarea></div>
+                    <div class="flex flex-col gap-3">
+                        <input type="text" id="cust-name" placeholder="Full Name *" required class="w-full p-2.5 rounded bg-gray-100 dark:bg-black/30 border border-gray-300 dark:border-gray-700 text-dynamic text-sm outline-none">
+                        <input type="tel" id="cust-phone" placeholder="Phone Number *" required class="w-full p-2.5 rounded bg-gray-100 dark:bg-black/30 border border-gray-300 dark:border-gray-700 text-dynamic text-sm outline-none">
+                        <textarea id="cust-address" placeholder="Detailed Delivery Address *" rows="2" required class="w-full p-2.5 rounded bg-gray-100 dark:bg-black/30 border border-gray-300 dark:border-gray-700 text-dynamic text-sm outline-none"></textarea>
+                    </div>
                 </div>
 
                 <div class="mb-4 border-t border-gray-200 dark:border-gray-700 pt-3">
-                    <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-2">Select Payment Method:</h3>
-                    <div class="flex flex-col gap-2"><label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded transition-colors"><input type="radio" name="payment_method" value="Cash on Delivery (COD)" checked class="accent-ssbBlue w-4 h-4"><span class="text-sm font-bold text-gray-600 dark:text-gray-300"><i class="fas fa-truck text-green-500 mr-1"></i> Cash on Delivery</span></label><label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded transition-colors"><input type="radio" name="payment_method" value="QR Payment (eSewa/Khalti)" class="accent-ssbBlue w-4 h-4"><span class="text-sm font-bold text-gray-600 dark:text-gray-300"><i class="fas fa-qrcode text-purple-500 mr-1"></i> Pay via QR (eSewa/Khalti)</span></label></div>
-                </div>
+    <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-2">Select Payment Method:</h3>
+    <div class="flex flex-col gap-2">
+        <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded transition-colors">
+            <input type="radio" name="payment_method" value="COD" onchange="toggleQRBox()" checked class="accent-blue-500 w-4 h-4">
+            <span class="text-sm font-bold text-gray-600 dark:text-gray-300"><i class="fas fa-truck text-green-500 mr-1"></i> COD (Cash on Delivery)</span>
+        </label>
+        
+        <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded transition-colors">
+            <input type="radio" name="payment_method" value="QR" onchange="toggleQRBox()" class="accent-blue-500 w-4 h-4">
+            <span class="text-sm font-bold text-gray-600 dark:text-gray-300"><i class="fas fa-qrcode text-purple-500 mr-1"></i> eSewa / Khalti (QR)</span>
+        </label>
+    </div>
+</div>
 
-                <div class="flex justify-between text-xl font-black text-gray-800 dark:text-white mb-4"><span>Total Payable Amount:</span><span class="text-ssbGreen">Rs. <span id="cart-total">0</span></span></div>
-                <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-black text-lg hover:scale-105 transition-transform" id="btn-checkout" onclick="checkoutWhatsApp()"><i class="fab fa-whatsapp text-xl mr-2"></i> Confirm Order</button>
+<div id="qr-payment-box" class="hidden mt-2 p-4 border-2 border-green-500 border-dashed rounded-lg text-center bg-green-50 dark:bg-green-900/20">
+    <p class="text-sm font-bold text-green-700 dark:text-green-400 mb-2">Scan this QR to Pay</p>
+    
+    <img src="https://https://i.postimg.cc/QdxBv6D9/qr.jpg" alt="Payment QR" class="w-48 h-48 mx-auto rounded shadow-sm object-contain">
+    
+    <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">पेमेन्ट गरेपछि अर्डर पक्का (Confirm) गर्नुहोला।</p>
+</div>
+
+                <div class="flex justify-between text-xl font-black text-gray-800 dark:text-white mb-4"><span>Total Payable:</span><span class="text-ssbGreen">Rs. <span id="cart-total">0</span></span></div>
+                <button class="w-full py-3 bg-[#25D366] text-white rounded-xl font-black text-lg hover:scale-105 transition-transform" onclick="checkoutWhatsApp()"><i class="fab fa-whatsapp text-xl mr-2"></i> Confirm Order</button>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAwXH8HT4XRdbPG4HVE1aiAonH6MoDwOSM",
-            authDomain: "ssb-delivery-ad6d5.firebaseapp.com",
-            projectId: "ssb-delivery-ad6d5",
-            storageBucket: "ssb-delivery-ad6d5.firebasestorage.app",
-            messagingSenderId: "1002588946582",
-            appId: "1:1002588946582:web:193deabf5ec9e3e50b02b7",
-            measurementId: "G-NMWRY0GQH7"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        let globalProducts = [];
-        let globalReviews = [];
-        let wishlist = JSON.parse(localStorage.getItem('ssb_wishlist')) || [];
-        let cart = []; 
-        let currentModalProduct = {}; 
-        let currentDeliveryFee = 50;
-        let currentCategory = 'All'; 
-        let currentQty = 1; 
-        let currentStep = 1;
-
-        // Start Firebase Sync
-        onSnapshot(collection(db, "products"), (snapshot) => {
-            globalProducts = []; snapshot.forEach(doc => { globalProducts.push({ id_doc: doc.id, ...doc.data() }); });
-            renderCategoryButtons(); filterAndDisplayProducts(); document.getElementById('cloud-status').classList.remove('hidden');
-        });
-        onSnapshot(collection(db, "reviews"), (snapshot) => {
-            globalReviews = []; snapshot.forEach(doc => { globalReviews.push({ id_doc: doc.id, ...doc.data() }); });
-        });
-        onSnapshot(doc(db, "settings", "main"), (doc) => { if(doc.exists() && doc.data().videoUrl) document.getElementById('promo-video').src = doc.data().videoUrl; });
-
-        function updateWishlistBadge() { 
-            let countEl = document.getElementById('wish-count'); countEl.innerText = wishlist.length; 
-            if(wishlist.length > 0) { document.getElementById('floating-cart').classList.remove('hidden'); countEl.parentElement.classList.remove('hidden'); }
-        }
-        updateWishlistBadge();
+    <script>
+        const defaultProducts = [
+            { sku: 'SSB-ZUB-101', company: 'Zubara', name: 'Zubara M40 Diaper', images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80'], stock: 5000, t1p: 1200, t2q: 11, t2p: 1100, t3q: 35, t3p: 950, desc: 'Premium baby diapers.', packQty: 1, offerType: 'none', offerX: 0, offerY: 0 },
+            { sku: 'SSB-EVO-202', company: 'Evora', name: 'Evora Tissue Box', images: ['https://images.unsplash.com/photo-1584556812952-905ffd0c611a?w=400&q=80'], stock: 1200, t1p: 150, t2q: 20, t2p: 130, t3q: 100, t3p: 100, desc: 'Soft facial tissues.', packQty: 6, offerType: 'free_item', offerX: 6, offerY: 1 }
+        ];
+        
+        let myProducts = JSON.parse(localStorage.getItem('ssb_products')); if(!myProducts || myProducts.length === 0) { myProducts = defaultProducts; localStorage.setItem('ssb_products', JSON.stringify(myProducts)); }
+        
+        const isoGrid = document.getElementById('iso-product-grid'); const btnContainer = document.getElementById('category-buttons');
+        let currentCategory = 'All'; let currentQty = 1; let currentStep = 1; let cart = []; let currentModalProduct = {}; let currentDeliveryFee = 50;
 
         function renderCategoryButtons() {
-            const btnContainer = document.getElementById('category-buttons');
-            let uniqueBrands = [...new Set(globalProducts.map(p => p.company))].filter(b => b.toLowerCase() !== 'galaxy');
+            let products = JSON.parse(localStorage.getItem('ssb_products')) || defaultProducts;
+            let uniqueBrands = [...new Set(products.map(p => p.company))].filter(b => b.toLowerCase() !== 'galaxy');
             let dynamicCategories = ["All", ...uniqueBrands]; let btnHtml = '';
             dynamicCategories.forEach(cat => {
                 let isActive = cat === currentCategory;
@@ -263,83 +276,53 @@
         window.searchProducts = function() { filterAndDisplayProducts(); };
 
         function filterAndDisplayProducts() {
-            const isoGrid = document.getElementById('iso-product-grid'); isoGrid.innerHTML = ''; let htmlCode = ''; let searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            if(globalProducts.length === 0) { isoGrid.innerHTML = '<p class="text-gray-500 col-span-full text-center">No products synced yet.</p>'; return; }
-            
-            let filteredProducts = globalProducts.filter(item => {
-                let matchesCategory = currentCategory === 'All' ? item.company.toLowerCase() !== 'galaxy' : item.company === currentCategory;
-                return matchesCategory && (item.name.toLowerCase().includes(searchQuery) || item.company.toLowerCase().includes(searchQuery) || (item.sku && item.sku.toLowerCase().includes(searchQuery)));
-            });
+            isoGrid.innerHTML = ''; let htmlCode = ''; let searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            myProducts = JSON.parse(localStorage.getItem('ssb_products')) || defaultProducts;
+            let filteredProducts = myProducts.filter(item => { let matchesCategory = currentCategory === 'All' ? item.company.toLowerCase() !== 'galaxy' : item.company === currentCategory; return matchesCategory && (item.name.toLowerCase().includes(searchQuery) || item.company.toLowerCase().includes(searchQuery)); });
 
             filteredProducts.forEach(item => {
-                let originalIndex = globalProducts.findIndex(x => x.sku === item.sku);
-                let basePrice = parseFloat(item.t1p || item.mrp || 0); let finalPrice = basePrice - parseFloat(item.discount || 0);
-                let pQty = item.packQty ? parseInt(item.packQty) : 1;
-                let img = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : item.image; 
-
-                let isWished = wishlist.includes(item.sku) ? 'wished' : 'text-gray-400';
-
-                let offerBadge = '';
-                if(item.offerType === 'free_item' && item.offerX > 0) offerBadge = `<div class="absolute top-10 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">Buy ${item.offerX} Get ${item.offerY} Free</div>`;
-                else if(item.offerType === 'percent_off' && item.offerX > 0) offerBadge = `<div class="absolute top-10 left-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">Buy ${item.offerX} Get ${item.offerY}% Off</div>`;
+                let originalIndex = myProducts.findIndex(x => x.name === item.name);
+                let basePrice = parseFloat(item.t1p || item.mrp || 0); let finalPrice = basePrice - parseFloat(item.discount || 0); let pQty = item.packQty ? parseInt(item.packQty) : 1; let img = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : item.image; 
+                let offerBadge = ''; if(item.offerType === 'free_item' && item.offerX > 0) offerBadge = `<div class="absolute top-10 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">Buy ${item.offerX} Get ${item.offerY} Free</div>`; else if(item.offerType === 'percent_off' && item.offerX > 0) offerBadge = `<div class="absolute top-10 left-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">Buy ${item.offerX} Get ${item.offerY}% Off</div>`;
 
                 htmlCode += `
                     <div class="flip-wrapper h-[300px] bg-white dark:bg-transparent rounded-2xl shadow-md dark:shadow-none" onclick="this.classList.toggle('active')">
                         <div class="flip-inner">
                             <div class="flip-front border border-gray-200 dark:border-white/10">
-                                <div class="absolute top-3 left-3 z-20 text-xl wish-icon ${isWished}" onclick="event.stopPropagation(); toggleWishlist('${item.sku}', this)"><i class="fas fa-heart"></i></div>
                                 <img src="${img}" class="product-3d-img rounded-xl filter drop-shadow-xl" onerror="this.src='https://via.placeholder.com/200'">
                                 ${item.discount > 0 ? `<div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded shadow-md z-10">-Rs.${item.discount} OFF</div>` : ''}
-                                ${pQty > 1 ? `<div class="absolute top-2 left-10 bg-purple-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">Pack of ${pQty}</div>` : ''}
+                                ${pQty > 1 ? `<div class="absolute top-2 left-2 bg-purple-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">Pack of ${pQty}</div>` : ''}
                                 ${offerBadge}
                                 <div class="content-3d mt-auto text-center w-full pb-4"><h3 class="text-sm font-black text-dynamic truncate px-2">${item.name}</h3><p class="text-lg font-bold text-ssbBlue mt-1">Rs. ${finalPrice}</p></div>
                             </div>
-                            <div class="flip-back bg-gray-50 dark:bg-[#0a192f] border border-gray-300 dark:border-ssbBlue">
-                                <div class="content-3d w-full mt-auto p-4"><button class="w-full py-2 mb-3 border-2 border-ssbBlue text-ssbBlue rounded-lg font-bold hover:bg-ssbBlue hover:text-white transition-colors shadow-md" onclick="event.stopPropagation(); openProductModal(${originalIndex});">View Full Details</button></div>
-                            </div>
+                            <div class="flip-back bg-gray-50 dark:bg-[#0a192f] border border-gray-300 dark:border-ssbBlue"><div class="content-3d w-full mt-auto p-4"><button class="w-full py-2 mb-3 border-2 border-ssbBlue text-ssbBlue rounded-lg font-bold hover:bg-ssbBlue hover:text-white transition-colors shadow-md" onclick="event.stopPropagation(); openProductModal(${originalIndex});">View Full Details</button></div></div>
                         </div>
                     </div>`;
-            });
-            isoGrid.innerHTML = htmlCode;
-        }
-
-        window.toggleWishlist = function(sku, el) { let idx = wishlist.indexOf(sku); if(idx === -1) { wishlist.push(sku); el.classList.remove('text-gray-400'); el.classList.add('wished'); } else { wishlist.splice(idx, 1); el.classList.remove('wished'); el.classList.add('text-gray-400'); } localStorage.setItem('ssb_wishlist', JSON.stringify(wishlist)); updateWishlistBadge(); }
-        window.toggleWishlistModalProduct = function() { let el = document.getElementById('modal-wishlist-btn'); let sku = currentModalProduct.sku; let idx = wishlist.indexOf(sku); if(idx === -1) { wishlist.push(sku); el.classList.add('wished'); } else { wishlist.splice(idx, 1); el.classList.remove('wished'); } localStorage.setItem('ssb_wishlist', JSON.stringify(wishlist)); updateWishlistBadge(); filterAndDisplayProducts(); }
-
-        window.toggleWishlistModal = function() {
-            const container = document.getElementById('wishlist-items-container'); container.innerHTML = '';
-            if(wishlist.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-6 font-bold">Your wishlist is empty.</p>'; } 
-            else {
-                globalProducts.forEach((p, index) => {
-                    if(wishlist.includes(p.sku)) {
-                        let img = Array.isArray(p.images) ? p.images[0] : p.image;
-                        container.innerHTML += `<div class="flex justify-between items-center bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10"><div class="flex items-center gap-3"><img src="${img}" class="w-12 h-12 object-contain rounded bg-white p-1"><div class="w-32 md:w-48"><span class="text-gray-800 dark:text-white text-sm font-bold block truncate">${p.name}</span><span class="text-xs text-gray-500">Rs. ${p.t1p || p.mrp}</span></div></div><div class="flex gap-2"><button onclick="openProductModal(${index}); closeModal('wishlistModal');" class="bg-ssbBlue text-white px-3 py-1 rounded text-xs font-bold">View</button><button onclick="toggleWishlist('${p.sku}', this); toggleWishlistModal();" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button></div></div>`;
-                    }
-                });
-            }
-            document.getElementById('wishlistModal').style.display = 'flex';
+            }); isoGrid.innerHTML = htmlCode;
         }
 
         function updateModalPriceDisplay() {
             let q = currentQty; let p = currentModalProduct; let unitPrice = p.t1p || p.basePrice; let activeTier = 1;
             if(p.t3q && q >= p.t3q) { unitPrice = p.t3p; activeTier = 3; } else if(p.t2q && q >= p.t2q) { unitPrice = p.t2p; activeTier = 2; }
+
             document.querySelectorAll('.tier-box').forEach(b => b.classList.remove('active')); let tBox = document.getElementById(`tier-${activeTier}`); if(tBox) tBox.classList.add('active');
 
             let baseTotal = unitPrice * q; let finalTotal = baseTotal; let msg = '';
-            if(p.offerType === 'percent_off' && p.offerX > 0 && q >= p.offerX) { finalTotal = baseTotal - (baseTotal * (p.offerY / 100)); msg = `🎉 Extra ${p.offerY}% OFF!`; } else if(p.offerType === 'free_item' && p.offerX > 0 && q >= p.offerX) { let freePcs = Math.floor(q / p.offerX) * p.offerY; msg = `🎁 +${freePcs} FREE item(s)!`; }
+            if(p.offerType === 'percent_off' && p.offerX > 0 && q >= p.offerX) { finalTotal = baseTotal - (baseTotal * (p.offerY / 100)); msg = `🎉 Wholesale Offer Applied: Extra ${p.offerY}% OFF!`; } else if(p.offerType === 'free_item' && p.offerX > 0 && q >= p.offerX) { let freePcs = Math.floor(q / p.offerX) * p.offerY; msg = `🎁 Mega Offer: You will get +${freePcs} FREE item(s) with this order!`; }
 
-            document.getElementById('detail-price').innerText = Math.round(finalTotal);
-            let offerMsgEl = document.getElementById('wholesale-offer-msg'); if(msg !== '') { offerMsgEl.innerText = msg; offerMsgEl.classList.remove('hidden'); } else { offerMsgEl.classList.add('hidden'); }
+            document.getElementById('detail-price').innerText = Math.round(finalTotal); let offerMsgEl = document.getElementById('wholesale-offer-msg');
+            if(msg !== '') { offerMsgEl.innerText = msg; offerMsgEl.classList.remove('hidden'); } else { offerMsgEl.classList.add('hidden'); }
             
             currentModalProduct.finalUnitPrice = unitPrice; currentModalProduct.totalSaved = ((p.t1p || p.basePrice) * q) - finalTotal; if(p.offerType === 'free_item') currentModalProduct.totalSaved += Math.floor(q / p.offerX) * p.offerY * (p.t1p || p.basePrice);
         }
 
         window.openProductModal = function(index) {
-            let p = globalProducts[index]; let itemBasePrice = parseFloat(p.t1p || p.mrp || 0); let itemDiscount = parseFloat(p.discount || 0);
+            myProducts = JSON.parse(localStorage.getItem('ssb_products')); let p = myProducts[index];
+            let itemBasePrice = parseFloat(p.t1p || p.mrp || 0); let itemDiscount = parseFloat(p.discount || 0);
             currentStep = p.packQty ? parseInt(p.packQty) : 1; if(isNaN(currentStep) || currentStep < 1) currentStep = 1; currentQty = currentStep; 
-            let mainImage = Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : p.image;
 
-            currentModalProduct = { sku: p.sku, name: p.name, basePrice: itemBasePrice - itemDiscount, t1p: itemBasePrice - itemDiscount, t2q: p.t2q, t2p: p.t2p ? p.t2p - itemDiscount : null, t3q: p.t3q, t3p: p.t3p ? p.t3p - itemDiscount : null, image: mainImage, images: p.images || [p.image], offerType: p.offerType || 'none', offerX: p.offerX || 0, offerY: p.offerY || 0, originalMrp: itemBasePrice, stock: p.stock };
+            let mainImage = Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : p.image;
+            currentModalProduct = { name: p.name, basePrice: itemBasePrice - itemDiscount, t1p: itemBasePrice - itemDiscount, t2q: p.t2q, t2p: p.t2p ? p.t2p - itemDiscount : null, t3q: p.t3q, t3p: p.t3p ? p.t3p - itemDiscount : null, image: mainImage, images: p.images || [p.image], offerType: p.offerType || 'none', offerX: p.offerX || 0, offerY: p.offerY || 0, originalMrp: itemBasePrice };
 
             let tHtml = ''; let t1Text = p.t2q ? `1-${p.t2q - 1} PCS` : '1+ PCS';
             tHtml += `<div class="tier-box active bg-gray-100 dark:bg-black/40 rounded p-2 text-center flex-1" id="tier-1" onclick="forceQty(1)"><p class="text-[10px] text-gray-500 font-bold">${t1Text}</p><p class="text-sm font-black text-ssbBlue">Rs.${currentModalProduct.t1p}</p></div>`;
@@ -347,124 +330,64 @@
             if(p.t3q && p.t3p) { tHtml += `<div class="tier-box bg-gray-100 dark:bg-black/40 rounded p-2 text-center flex-1" id="tier-3" onclick="forceQty(${p.t3q})"><p class="text-[10px] text-gray-500 font-bold">${p.t3q}+ PCS</p><p class="text-sm font-black text-ssbBlue">Rs.${currentModalProduct.t3p}</p></div>`; }
             document.getElementById('pricing-tiers-container').innerHTML = tHtml;
 
-            document.getElementById('product-qty').value = currentQty; document.getElementById('detail-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
-            let stockBadge = document.getElementById('detail-stock-badge'); if(p.stock > 0) { stockBadge.innerText = 'In Stock'; stockBadge.className = 'text-[10px] bg-green-100 text-green-600 px-2 py-1 rounded font-bold ml-auto uppercase'; } else { stockBadge.innerText = 'Out of Stock'; stockBadge.className = 'text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded font-bold ml-auto uppercase'; }
+            document.getElementById('product-qty').value = currentQty; document.getElementById('detail-sku').innerText = `SKU: ${p.sku || 'N/A'}`; document.getElementById('detail-name').innerText = p.name; document.getElementById('detail-company').innerText = p.company; document.getElementById('main-detail-img').src = mainImage; document.getElementById('detail-desc').innerText = p.desc || "Premium Quality Product.";
             
-            document.getElementById('detail-name').innerText = p.name; document.getElementById('detail-company').innerText = p.company; document.getElementById('main-detail-img').src = mainImage; document.getElementById('detail-desc').innerText = p.desc || "Premium Quality Product.";
-
             let galHtml = ''; if(currentModalProduct.images && Array.isArray(currentModalProduct.images)) { currentModalProduct.images.forEach(img => { if(img) { galHtml += `<div class="w-14 h-14 shrink-0 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-black/30 p-1 cursor-pointer hover:border-ssbBlue transition-colors" onclick="document.getElementById('main-detail-img').src='${img}'"><img src="${img}" class="w-full h-full object-contain"></div>`; } }); } document.getElementById('gallery-thumbnails').innerHTML = galHtml;
 
             let oldPriceCont = document.getElementById('detail-old-price-container'); let discTag = document.getElementById('detail-discount-tag');
             if(p.discount > 0) { document.getElementById('detail-old-price').innerText = itemBasePrice * currentQty; oldPriceCont.classList.remove('hidden'); discTag.innerText = `Save Rs.${p.discount}!`; discTag.classList.remove('hidden'); } else { oldPriceCont.classList.add('hidden'); discTag.classList.add('hidden'); }
-            
-            let minWarning = document.getElementById('min-qty-warning'); if(currentStep > 1) { minWarning.innerText = `* Sold in multiples of ${currentStep}`; minWarning.classList.remove('hidden'); } else { minWarning.classList.add('hidden'); }
+            let minWarning = document.getElementById('min-qty-warning'); if(currentStep > 1) { minWarning.innerText = `* Wholesale Item: Sold in multiples of ${currentStep} pieces.`; minWarning.classList.remove('hidden'); } else { minWarning.classList.add('hidden'); }
 
-            let wishBtn = document.getElementById('modal-wishlist-btn'); if(wishlist.includes(p.sku)) wishBtn.classList.add('wished'); else wishBtn.classList.remove('wished');
-
-            document.getElementById('gps-result').innerHTML = ''; document.getElementById('pincode-input').value = ''; updateAverageRating(p.name); renderReviews(p.name); setRating(5); updateModalPriceDisplay(); document.getElementById('productDetailModal').style.display = 'flex';
+            document.getElementById('gps-result').innerHTML = ''; document.getElementById('pincode-input').value = '';
+            updateAverageRating(p.name); renderReviews(p.name); setRating(5); updateModalPriceDisplay(); document.getElementById('productDetailModal').style.display = 'flex';
         }
 
         window.forceQty = function(q) { let rem = q % currentStep; if(rem !== 0) q = q + (currentStep - rem); document.getElementById('product-qty').value = q; currentQty = q; updateModalPriceDisplay(); }
         window.updateQty = function(change) { let newQty = currentQty + (change * currentStep); if (newQty >= currentStep && newQty <= (currentStep * 50)) { currentQty = newQty; document.getElementById('product-qty').value = currentQty; let oldPriceEl = document.getElementById('detail-old-price-container'); if(!oldPriceEl.classList.contains('hidden')) { document.getElementById('detail-old-price').innerText = currentModalProduct.originalMrp * currentQty; } updateModalPriceDisplay(); } }
 
         window.checkManualDelivery = function() { let val = document.getElementById('pincode-input').value.toLowerCase(); let res = document.getElementById('gps-result'); if(!val) { res.innerHTML = "<span class='text-red-500'>Enter zip/city!</span>"; return; } res.innerHTML = '<i class="fas fa-spinner fa-spin text-ssbBlue"></i>'; setTimeout(() => { if(val.includes('ktm') || val.includes('kathmandu') || val.includes('44600')) { currentDeliveryFee = 50; res.innerHTML = `<span class="text-green-500"><i class="fas fa-check"></i> Available (Rs.50)</span>`; } else { currentDeliveryFee = 150; res.innerHTML = `<span class="text-yellow-500"><i class="fas fa-truck"></i> Out of Valley (Rs.150)</span>`; } }, 800); }
-        window.calculateDeliveryGPS = function() { const resultEl = document.getElementById('gps-result'); resultEl.innerHTML = '<i class="fas fa-spinner fa-spin text-ssbBlue"></i> Tracking...'; if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(position => { const storeLat = 27.7172; const storeLon = 85.3240; const dLat = (position.coords.latitude - storeLat) * (Math.PI/180); const dLon = (position.coords.longitude - storeLon) * (Math.PI/180); const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(storeLat*Math.PI/180)*Math.cos(position.coords.latitude*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2); const distance = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); currentDeliveryFee = 50 + (distance > 5 ? Math.ceil(distance - 5) * 10 : 0); resultEl.innerHTML = `<span class="text-ssbGreen"><i class="fas fa-check"></i> Found</span> | Dist: ${distance.toFixed(1)}km | <span class="text-ssbBlue font-black">Rs. ${currentDeliveryFee}</span>`; }, () => { resultEl.innerHTML = '<span class="text-red-500">Turn on GPS!</span>'; }); } }
+        window.calculateDeliveryGPS = function() { const resultEl = document.getElementById('gps-result'); resultEl.innerHTML = '<i class="fas fa-spinner fa-spin text-ssbBlue"></i> Tracking...'; if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(position => { const storeLat = 27.7172; const storeLon = 85.3240; const dLat = (position.coords.latitude - storeLat) * (Math.PI/180); const dLon = (position.coords.longitude - storeLon) * (Math.PI/180); const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(storeLat*Math.PI/180)*Math.cos(position.coords.latitude*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2); const distance = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); currentDeliveryFee = 50 + (distance > 5 ? Math.ceil(distance - 5) * 10 : 0); resultEl.innerHTML = `<span class="text-ssbGreen"><i class="fas fa-check"></i> Found</span> | Dist: ${distance.toFixed(1)}km <br> Cost: <span class="text-ssbBlue font-black">Rs. ${currentDeliveryFee}</span>`; }, () => { resultEl.innerHTML = '<span class="text-red-500">Turn on GPS!</span>'; }); } }
 
-        window.addCurrentToCart = function(isBuyNow) {
-            if(currentModalProduct.stock && currentQty > currentModalProduct.stock) { alert(`Only ${currentModalProduct.stock} items left in stock!`); return; }
-            let finalTotal = currentModalProduct.finalUnitPrice * currentQty; let freePcs = 0; let isDiscounted = false;
-            if(currentModalProduct.offerType === 'percent_off' && currentModalProduct.offerX > 0 && currentQty >= currentModalProduct.offerX) { finalTotal = finalTotal - (finalTotal * (currentModalProduct.offerY / 100)); isDiscounted = true; } else if(currentModalProduct.offerType === 'free_item' && currentModalProduct.offerX > 0 && currentQty >= currentModalProduct.offerX) { freePcs = Math.floor(currentQty / currentModalProduct.offerX) * currentModalProduct.offerY; }
-            let originalMrpTotal = currentModalProduct.originalMrp * currentQty; let moneySaved = originalMrpTotal - finalTotal; let freeItemValue = freePcs * currentModalProduct.basePrice; let totalSavings = moneySaved + freeItemValue;
-            cart.push({ name: currentModalProduct.name, qty: currentQty, total: Math.round(finalTotal), img: currentModalProduct.image, freeItems: freePcs, isDiscounted: isDiscounted, savings: Math.round(totalSavings) });
-            document.getElementById('cart-count').innerText = cart.length; document.getElementById('floating-cart').classList.remove('hidden'); closeModal('productDetailModal'); if(isBuyNow) { openCartModal(); }
-        }
+        window.addCurrentToCart = function(isBuyNow) { let finalTotal = currentModalProduct.finalUnitPrice * currentQty; let freePcs = 0; let isDiscounted = false; if(currentModalProduct.offerType === 'percent_off' && currentModalProduct.offerX > 0 && currentQty >= currentModalProduct.offerX) { finalTotal = finalTotal - (finalTotal * (currentModalProduct.offerY / 100)); isDiscounted = true; } else if(currentModalProduct.offerType === 'free_item' && currentModalProduct.offerX > 0 && currentQty >= currentModalProduct.offerX) { freePcs = Math.floor(currentQty / currentModalProduct.offerX) * currentModalProduct.offerY; } let originalMrpTotal = currentModalProduct.originalMrp * currentQty; let moneySaved = originalMrpTotal - finalTotal; let freeItemValue = freePcs * currentModalProduct.basePrice; let totalSavings = moneySaved + freeItemValue; cart.push({ name: currentModalProduct.name, qty: currentQty, total: Math.round(finalTotal), img: currentModalProduct.image, freeItems: freePcs, isDiscounted: isDiscounted, savings: Math.round(totalSavings) }); document.getElementById('cart-count').innerText = cart.length; closeModal('productDetailModal'); if(isBuyNow) { openCartModal(); } }
 
         window.setRating = function(val) { document.getElementById('review-rating').value = val; let stars = document.getElementById('star-selector').getElementsByTagName('i'); for(let i = 0; i < 5; i++) { if(i < val) { stars[i].classList.remove('text-gray-300', 'dark:text-gray-600'); stars[i].classList.add('text-gold'); } else { stars[i].classList.remove('text-gold'); stars[i].classList.add('text-gray-300', 'dark:text-gray-600'); } } }
-        function updateAverageRating(pName) { let productRevs = globalReviews.filter(r => r.productName === pName) || []; let starContainer = document.getElementById('detail-avg-stars'); let countContainer = document.getElementById('detail-review-count'); if(productRevs.length === 0) { starContainer.innerHTML = '<i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>'; countContainer.innerText = '(0 Reviews)'; return; } let total = 0; productRevs.forEach(r => total += parseInt(r.rating || 5)); let avg = Math.round(total / productRevs.length); let starsHtml = ''; for(let i = 1; i <= 5; i++) { if(i <= avg) starsHtml += '<i class="fas fa-star"></i>'; else starsHtml += '<i class="far fa-star"></i>'; } starContainer.innerHTML = starsHtml; countContainer.innerText = `(${productRevs.length} Reviews)`; }
-        
-        window.submitProductReview = async function() {
-            let name = document.getElementById('reviewer-name').value; let email = document.getElementById('reviewer-email').value; let text = document.getElementById('review-text').value; let rating = document.getElementById('review-rating').value;
-            if(!name || !email || !text) { alert("Please enter your name, email, and comment!"); return; } let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; if(!emailPattern.test(email)) { alert("Please enter a valid email address!"); return; }
-            let date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-            
-            // Push Review to Firestore
-            await addDoc(collection(db, "reviews"), { productName: currentModalProduct.name, name, email, text, rating, date });
-            document.getElementById('reviewer-name').value = ''; document.getElementById('reviewer-email').value = ''; document.getElementById('review-text').value = ''; 
-        }
+        function updateAverageRating(pName) { let reviews = JSON.parse(localStorage.getItem('ssb_reviews')) || {}; let productRevs = reviews[pName] || []; let starContainer = document.getElementById('detail-avg-stars'); let countContainer = document.getElementById('detail-review-count'); if(productRevs.length === 0) { starContainer.innerHTML = '<i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>'; countContainer.innerText = '(0 Reviews)'; return; } let total = 0; productRevs.forEach(r => total += parseInt(r.rating || 5)); let avg = Math.round(total / productRevs.length); let starsHtml = ''; for(let i = 1; i <= 5; i++) { if(i <= avg) starsHtml += '<i class="fas fa-star"></i>'; else starsHtml += '<i class="far fa-star"></i>'; } starContainer.innerHTML = starsHtml; countContainer.innerText = `(${productRevs.length} Reviews)`; }
+        window.submitProductReview = function() { let name = document.getElementById('reviewer-name').value; let email = document.getElementById('reviewer-email').value; let text = document.getElementById('review-text').value; let rating = document.getElementById('review-rating').value; if(!name || !email || !text) { alert("Please enter your name, email, and comment!"); return; } let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; if(!emailPattern.test(email)) { alert("Please enter a valid email address!"); return; } let pName = currentModalProduct.name; let productReviews = JSON.parse(localStorage.getItem('ssb_reviews')) || {}; if(!productReviews[pName]) productReviews[pName] = []; let date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); productReviews[pName].push({ name, email, text, rating, date }); localStorage.setItem('ssb_reviews', JSON.stringify(productReviews)); document.getElementById('reviewer-name').value = ''; document.getElementById('reviewer-email').value = ''; document.getElementById('review-text').value = ''; updateAverageRating(pName); renderReviews(pName); }
+        function renderReviews(productName) { const list = document.getElementById('reviews-list'); list.innerHTML = ''; let reviews = JSON.parse(localStorage.getItem('ssb_reviews')) || {}; let productRevs = reviews[productName] || []; if(productRevs.length === 0) { list.innerHTML = '<p class="text-sm text-gray-500 italic">No reviews yet. Be the first to share your experience!</p>'; return; } [...productRevs].reverse().forEach(rev => { let rStars = ''; let userRating = parseInt(rev.rating || 5); for(let i = 1; i <= 5; i++) { if(i <= userRating) rStars += '<i class="fas fa-star text-gold"></i>'; else rStars += '<i class="far fa-star text-gray-400"></i>'; } list.innerHTML += `<div class="bg-white dark:bg-black/30 p-3 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm relative"><div class="absolute top-3 right-3 text-[10px] bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-1 rounded font-bold"><i class="fas fa-check-circle mr-1"></i>Verified</div><div class="flex items-center gap-2 mb-1"><div class="w-8 h-8 rounded-full bg-ssbBlue text-white flex items-center justify-center font-black text-xs uppercase">${rev.name.charAt(0)}</div><div><span class="font-bold text-sm text-gray-800 dark:text-white">${rev.name}</span><span class="text-[10px] text-gray-500 block">${rev.date}</span></div></div><div class="text-[10px] mb-2 mt-2 flex gap-1">${rStars}</div><p class="text-sm text-gray-600 dark:text-gray-300 italic border-l-2 border-gray-300 dark:border-gray-600 pl-2">"${rev.text}"</p></div>`; }); }
 
-        function renderReviews(productName) {
-            const list = document.getElementById('reviews-list'); list.innerHTML = ''; let productRevs = globalReviews.filter(r => r.productName === productName) || [];
-            if(productRevs.length === 0) { list.innerHTML = '<p class="text-sm text-gray-500 italic">No reviews yet. Be the first to share your experience!</p>'; return; }
-            [...productRevs].reverse().forEach(rev => {
-                let rStars = ''; let userRating = parseInt(rev.rating || 5); for(let i = 1; i <= 5; i++) { if(i <= userRating) rStars += '<i class="fas fa-star text-gold"></i>'; else rStars += '<i class="far fa-star text-gray-400"></i>'; }
-                list.innerHTML += `<div class="bg-white dark:bg-black/30 p-3 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm relative"><div class="absolute top-3 right-3 text-[10px] bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-1 rounded font-bold"><i class="fas fa-check-circle mr-1"></i>Verified</div><div class="flex items-center gap-2 mb-1"><div class="w-8 h-8 rounded-full bg-ssbBlue text-white flex items-center justify-center font-black text-xs uppercase">${rev.name.charAt(0)}</div><div><span class="font-bold text-sm text-gray-800 dark:text-white">${rev.name}</span><span class="text-[10px] text-gray-500 block">${rev.date}</span></div></div><div class="text-[10px] mb-2 mt-2 flex gap-1">${rStars}</div><p class="text-sm text-gray-600 dark:text-gray-300 italic border-l-2 border-gray-300 dark:border-gray-600 pl-2">"${rev.text}"</p></div>`;
-            });
-        }
-
-        window.openCartModal = function() {
-            const container = document.getElementById('cart-items-container'); container.innerHTML = ''; let subtotal = 0; let totalSavings = 0;
-            if(cart.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-6 font-bold">Your cart is empty.</p>'; currentDeliveryFee = 0; } 
-            else {
-                currentDeliveryFee = 50; 
-                cart.forEach((item, index) => {
-                    subtotal += item.total; totalSavings += (item.savings || 0);
-                    let extraBadge = ''; if(item.freeItems > 0) extraBadge = `<span class="text-[10px] text-green-500 font-bold block">+ ${item.freeItems} FREE Item(s)!</span>`; else if(item.isDiscounted) extraBadge = `<span class="text-[10px] text-blue-500 font-bold block">Bulk Discount Applied</span>`;
-                    container.innerHTML += `<div class="flex justify-between items-center bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10"><div class="flex items-center gap-3"><img src="${item.img || ''}" class="w-12 h-12 object-contain rounded bg-white p-1"><div class="w-32 md:w-48"><span class="text-gray-800 dark:text-white text-sm font-bold block truncate">${item.name}</span><span class="text-xs text-gray-500 font-bold block">Qty: ${item.qty}</span>${extraBadge}</div></div><div class="flex items-center gap-4"><div class="text-right"><span class="text-ssbBlue font-bold block">Rs. ${item.total}</span>${item.savings > 0 ? `<span class="text-[10px] text-green-500 font-bold block">Saved Rs.${item.savings}</span>` : ''}</div><button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button></div></div>`;
-                });
-            }
-            document.getElementById('cart-subtotal').innerText = subtotal; document.getElementById('cart-delivery-cost').innerText = currentDeliveryFee; document.getElementById('cart-savings').innerText = totalSavings; document.getElementById('cart-total').innerText = subtotal + currentDeliveryFee; document.getElementById('cartModal').style.display = 'flex';
-        }
-
+        window.openCartModal = function() { const container = document.getElementById('cart-items-container'); container.innerHTML = ''; let subtotal = 0; let totalSavings = 0; if(cart.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-6 font-bold">Your cart is empty.</p>'; currentDeliveryFee = 0; } else { currentDeliveryFee = 50; cart.forEach((item, index) => { subtotal += item.total; totalSavings += (item.savings || 0); let extraBadge = ''; if(item.freeItems > 0) extraBadge = `<span class="text-[10px] text-green-500 font-bold block">+ ${item.freeItems} FREE Item(s)!</span>`; else if(item.isDiscounted) extraBadge = `<span class="text-[10px] text-blue-500 font-bold block">Bulk Discount Applied</span>`; container.innerHTML += `<div class="flex justify-between items-center bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-200 dark:border-white/10"><div class="flex items-center gap-3"><img src="${item.img || ''}" class="w-12 h-12 object-contain rounded bg-white p-1"><div class="w-32 md:w-48"><span class="text-gray-800 dark:text-white text-sm font-bold block truncate">${item.name}</span><span class="text-xs text-gray-500 font-bold block">Qty: ${item.qty}</span>${extraBadge}</div></div><div class="flex items-center gap-4"><div class="text-right"><span class="text-ssbBlue font-bold block">Rs. ${item.total}</span>${item.savings > 0 ? `<span class="text-[10px] text-green-500 font-bold block">Saved Rs.${item.savings}</span>` : ''}</div><button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button></div></div>`; }); } document.getElementById('cart-subtotal').innerText = subtotal; document.getElementById('cart-delivery-cost').innerText = currentDeliveryFee; document.getElementById('cart-savings').innerText = totalSavings; document.getElementById('cart-total').innerText = subtotal + currentDeliveryFee; document.getElementById('cartModal').style.display = 'flex'; }
         window.removeFromCart = function(index) { cart.splice(index, 1); document.getElementById('cart-count').innerText = cart.length; openCartModal(); if(cart.length === 0) { document.getElementById('floating-cart').classList.add('hidden'); closeModal('cartModal'); } }
 
-        window.checkoutWhatsApp = async function() {
+        window.checkoutWhatsApp = function() {
             if(cart.length === 0) return;
             let cName = document.getElementById('cust-name').value.trim(); let cPhone = document.getElementById('cust-phone').value.trim(); let cAddress = document.getElementById('cust-address').value.trim();
             if(!cName || !cPhone || !cAddress) { alert("Please fill in all Delivery Information fields!"); return; }
-
-            document.getElementById('btn-checkout').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
             let paymentMethod = document.querySelector('input[name="payment_method"]:checked').value; let subtotal = 0; let totalSavings = 0; cart.forEach(i => { subtotal += i.total; totalSavings += (i.savings || 0); });
-            
-            let newOrder = { id: 'ORD-' + Math.floor(1000 + Math.random() * 9000), date: new Date().toLocaleString(), customer: { name: cName, phone: cPhone, address: cAddress }, items: cart, total: subtotal + currentDeliveryFee, method: paymentMethod, status: 'Pending' }; 
-            
-            // Push Order to Cloud
-            await addDoc(collection(db, "orders"), newOrder);
-
-            let message = "नमस्ते SSB Brother Trading! नयाँ अर्डर:\n\n"; 
-            message += `👤 *Customer Details:*\nName: ${cName}\nPhone: ${cPhone}\nAddress: ${cAddress}\n\n`;
-            message += `📦 *Order Items:*\n`; cart.forEach((item, i) => { message += `*${i+1}. ${item.name}*\n   Qty: ${item.qty} `; if(item.freeItems > 0) message += `(+ ${item.freeItems} FREE!) `; if(item.isDiscounted) message += `(Discount Applied) `; message += `| Price: Rs. ${item.total}\n`; });
-            message += `\n🚚 Delivery Cost: Rs. ${currentDeliveryFee}`; if(totalSavings > 0) message += `\n🎁 Customer Saved: Rs. ${totalSavings}`; message += `\n🛒 Total Amount: Rs. ${subtotal + currentDeliveryFee}\n💳 Payment Method: ${paymentMethod}\n\nकृपया डेलिभरी प्रक्रिया अगाडि बढाउनुहोला।`;
-            
+            let previousOrders = JSON.parse(localStorage.getItem('ssb_orders')) || []; let newOrder = { id: 'ORD-' + Math.floor(1000 + Math.random() * 9000), date: new Date().toLocaleString(), customer: { name: cName, phone: cPhone, address: cAddress }, items: cart, total: subtotal + currentDeliveryFee, method: paymentMethod, status: 'Pending' }; previousOrders.push(newOrder); localStorage.setItem('ssb_orders', JSON.stringify(previousOrders));
+            let message = "नमस्ते SSB Brother Trading! नयाँ अर्डर:\n\n"; message += `👤 *Customer Details:*\nName: ${cName}\nPhone: ${cPhone}\nAddress: ${cAddress}\n\n`; message += `📦 *Order Items:*\n`; cart.forEach((item, i) => { message += `*${i+1}. ${item.name}*\n   Qty: ${item.qty} `; if(item.freeItems > 0) message += `(+ ${item.freeItems} FREE!) `; if(item.isDiscounted) message += `(Discount Applied) `; message += `| Price: Rs. ${item.total}\n`; }); message += `\n🚚 Delivery Cost: Rs. ${currentDeliveryFee}`; if(totalSavings > 0) message += `\n🎁 Customer Saved: Rs. ${totalSavings}`; message += `\n🛒 Total Amount: Rs. ${subtotal + currentDeliveryFee}\n💳 Payment Method: ${paymentMethod}\n\nकृपया डेलिभरी प्रक्रिया अगाडि बढाउनुहोला।`;
             window.open(`https://wa.me/9779744432502?text=${encodeURIComponent(message)}`, '_blank');
             cart = []; document.getElementById('cart-count').innerText = "0"; document.getElementById('floating-cart').classList.add('hidden'); closeModal('cartModal');
-            document.getElementById('btn-checkout').innerHTML = '<i class="fab fa-whatsapp text-xl mr-2"></i> Confirm Order';
         }
 
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; }
-        
-        window.openSurpriseModal = function() {
-            const modal = document.getElementById('surpriseModal'); modal.style.display = 'flex'; const overlay = document.getElementById('galaxy-intro-overlay'); const contentBox = document.getElementById('galaxy-content'); const grid = document.getElementById('modalSurpriseGrid'); overlay.style.opacity = '1'; overlay.style.display = 'flex'; contentBox.style.opacity = '0'; contentBox.style.display = 'none'; grid.innerHTML = ""; let galaxyOffers = globalProducts.filter(p => p.company.toLowerCase() === 'galaxy');
-            setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => { overlay.style.display = 'none'; contentBox.style.display = 'block'; contentBox.style.opacity = '1'; if (galaxyOffers.length === 0) { grid.innerHTML = '<p class="text-white text-center col-span-full text-xl font-bold mt-10">No Galaxy offers right now!</p>'; return; }
-                    galaxyOffers.forEach((offer, i) => { let itemMrp = parseFloat(offer.mrp || offer.t1p || offer.price || 0); let finalPrice = itemMrp - parseFloat(offer.discount || 0); let pQty = offer.packQty ? parseInt(offer.packQty) : 1; let originalMrpTotal = itemMrp * pQty; let savings = originalMrpTotal - (finalPrice * pQty); let mainImage = Array.isArray(offer.images) && offer.images.length > 0 ? offer.images[0] : offer.image;
-                        setTimeout(() => {
-                            grid.innerHTML += `<div class="flip-wrapper h-[300px]" onclick="this.classList.toggle('active')"><div class="flip-inner"><div class="flip-front border border-white/20 bg-black/80 rounded-2xl overflow-hidden relative"><img src="${mainImage}" class="product-3d-img rounded-xl filter drop-shadow-xl" onerror="this.style.display='none'">${offer.discount > 0 ? `<div class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded animate-pulse">-Rs.${offer.discount} OFF</div>` : ''}<div class="content-3d mt-auto text-center w-full z-10 relative pb-4"><h4 class="font-bold text-white mb-1 truncate px-2">${offer.name}</h4><p class="text-gold font-black text-xl">Rs. ${finalPrice}</p></div></div><div class="flip-back" style="background: rgba(0,242,254,0.1); border-color: #3b82f6;"><div class="content-3d mt-auto text-center w-full p-4 flex flex-col h-full justify-between"><p class="text-xs text-gray-300 mt-4 italic">"${offer.desc || 'Exclusive SSB Galaxy Deal!'}"</p><button class="w-full py-3 bg-gradient-to-r from-ssbBlue to-ssbGreen text-white rounded font-black text-sm hover:scale-105 transition-transform" onclick="event.stopPropagation(); cart.push({ name: '${offer.name} (Galaxy Offer)', qty: ${pQty}, total: ${finalPrice * pQty}, img: '${mainImage}', freeItems: 0, isDiscounted: false, savings: ${savings} }); document.getElementById('cart-count').innerText = cart.length; document.getElementById('floating-cart').classList.remove('hidden'); alert('Grabbed Deal!');"><i class="fas fa-shopping-cart mr-2"></i> Grab Deal</button></div></div></div></div>`;
-                        }, i * 200);
-                    });
-                }, 800);
-            }, 2000);
-        }
+        window.openSurpriseModal = function() { const modal = document.getElementById('surpriseModal'); modal.style.display = 'flex'; const overlay = document.getElementById('galaxy-intro-overlay'); const contentBox = document.getElementById('galaxy-content'); const grid = document.getElementById('modalSurpriseGrid'); overlay.style.opacity = '1'; overlay.style.display = 'flex'; contentBox.style.opacity = '0'; contentBox.style.display = 'none'; grid.innerHTML = ""; let allProducts = JSON.parse(localStorage.getItem('ssb_products')) || []; let galaxyOffers = allProducts.filter(p => p.company.toLowerCase() === 'galaxy'); setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => { overlay.style.display = 'none'; contentBox.style.display = 'block'; contentBox.style.opacity = '1'; if (galaxyOffers.length === 0) { grid.innerHTML = '<p class="text-white text-center col-span-full text-xl font-bold mt-10">No Galaxy offers right now!</p>'; return; } galaxyOffers.forEach((offer, i) => { let itemMrp = parseFloat(offer.mrp || offer.t1p || offer.price || 0); let finalPrice = itemMrp - parseFloat(offer.discount || 0); let pQty = offer.packQty ? parseInt(offer.packQty) : 1; let originalMrpTotal = itemMrp * pQty; let savings = originalMrpTotal - (finalPrice * pQty); let mainImage = Array.isArray(offer.images) && offer.images.length > 0 ? offer.images[0] : offer.image; setTimeout(() => { grid.innerHTML += `<div class="flip-wrapper h-[300px]" onclick="this.classList.toggle('active')"><div class="flip-inner"><div class="flip-front border border-white/20 bg-black/80 rounded-2xl overflow-hidden relative"><img src="${mainImage}" class="product-3d-img rounded-xl filter drop-shadow-xl" onerror="this.style.display='none'">${offer.discount > 0 ? `<div class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded animate-pulse">-Rs.${offer.discount} OFF</div>` : ''}<div class="content-3d mt-auto text-center w-full z-10 relative pb-4"><h4 class="font-bold text-white mb-1 truncate px-2">${offer.name}</h4><p class="text-gold font-black text-xl">Rs. ${finalPrice}</p></div></div><div class="flip-back" style="background: rgba(0,242,254,0.1); border-color: #3b82f6;"><div class="content-3d mt-auto text-center w-full p-4 flex flex-col h-full justify-between"><p class="text-xs text-gray-300 mt-4 italic">"${offer.desc || 'Exclusive SSB Galaxy Deal!'}"</p><button class="w-full py-3 bg-gradient-to-r from-ssbBlue to-ssbGreen text-white rounded font-black text-sm hover:scale-105 transition-transform" onclick="event.stopPropagation(); cart.push({ name: '${offer.name} (Galaxy Offer)', qty: ${pQty}, total: ${finalPrice * pQty}, img: '${mainImage}', freeItems: 0, isDiscounted: false, savings: ${savings} }); document.getElementById('cart-count').innerText = cart.length; document.getElementById('floating-cart').classList.remove('hidden'); alert('Grabbed Deal!');"><i class="fas fa-shopping-cart mr-2"></i> Grab Deal</button></div></div></div></div>`; }, i * 200); }); }, 800); }, 2000); }
 
         let isNepali = false; document.getElementById('btn-lang').addEventListener('click', (e) => { isNepali = !isNepali; e.target.innerText = isNepali ? 'EN' : 'NP'; }); const themeIcon = document.getElementById('icon-theme'); document.getElementById('btn-theme').addEventListener('click', () => { document.documentElement.classList.toggle('dark'); themeIcon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun text-yellow-500' : 'fas fa-moon text-slate-800'; });
 
-        document.addEventListener("DOMContentLoaded", (event) => {
-            gsap.registerPlugin(ScrollTrigger); const tl = gsap.timeline();
-            tl.to("#geo-box", { opacity: 1, scale: 1.5, rotation: 180, duration: 0.5 }).to("#geo-box", { opacity: 0, scale: 0, duration: 0.3 }).to("#liquid-sphere", { opacity: 1, scale: 1.2, duration: 0.6 }).to("#liquid-sphere", { opacity: 0, scale: 0, duration: 0.4 }).to("#trail-left", { opacity: 1, left: "50%", xPercent: -50, duration: 0.8 }, "crash").to("#trail-right", { opacity: 1, right: "50%", xPercent: 50, duration: 0.8 }, "crash").to([".trail-left", ".trail-right"], { opacity: 0, duration: 0.1 }).to("#shockwave", { opacity: 1, scale: 50, borderWidth: "1px", duration: 0.6 }).to("#shockwave", { opacity: 0, duration: 0.2 }).to("#final-logo", { opacity: 1, scale: 1, duration: 0.8 }).to("#preloader", { opacity: 0, duration: 0.8, delay: 0.5, onComplete: () => {
-                document.getElementById("preloader").style.display = "none"; document.getElementById("main-content").style.display = "block"; gsap.to("#main-content", { opacity: 1, duration: 0.5 }); startTypewriter(); 
-            }});
-        });
-
+        document.addEventListener("DOMContentLoaded", (event) => { gsap.registerPlugin(ScrollTrigger); const tl = gsap.timeline(); tl.to("#geo-box", { opacity: 1, scale: 1.5, rotation: 180, duration: 0.5 }).to("#geo-box", { opacity: 0, scale: 0, duration: 0.3 }).to("#liquid-sphere", { opacity: 1, scale: 1.2, duration: 0.6 }).to("#liquid-sphere", { opacity: 0, scale: 0, duration: 0.4 }).to("#trail-left", { opacity: 1, left: "50%", xPercent: -50, duration: 0.8 }, "crash").to("#trail-right", { opacity: 1, right: "50%", xPercent: 50, duration: 0.8 }, "crash").to([".trail-left", ".trail-right"], { opacity: 0, duration: 0.1 }).to("#shockwave", { opacity: 1, scale: 50, borderWidth: "1px", duration: 0.6 }).to("#shockwave", { opacity: 0, duration: 0.2 }).to("#final-logo", { opacity: 1, scale: 1, duration: 0.8 }).to("#preloader", { opacity: 0, duration: 0.8, delay: 0.5, onComplete: () => { document.getElementById("preloader").style.display = "none"; document.getElementById("main-content").style.display = "block"; gsap.to("#main-content", { opacity: 1, duration: 0.5 }); startTypewriter(); renderCategoryButtons(); filterAndDisplayProducts(); }}); let savedVid = localStorage.getItem('ssb_main_video'); if(savedVid) { let vids = document.querySelectorAll("video.admin-managed-video"); vids.forEach(v => { v.src = savedVid; }); } });
         function startTypewriter() { const text = "SSB BROTHERS TRADING"; let index = 0; function type() { if (index < text.length) { document.getElementById("typewriter-text").innerHTML += text.charAt(index); index++; setTimeout(type, 70); } else { setTimeout(() => { document.getElementById("typewriter-text").classList.remove('typewriter-cursor'); }, 3000); } } type(); }
     </script>
+    <script>
+    window.toggleQRBox = function() {
+        const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+        const qrBox = document.getElementById('qr-payment-box');
+        
+        if(selectedMethod === 'QR') {
+            qrBox.classList.remove('hidden');
+        } else {
+            qrBox.classList.add('hidden');
+        }
+    };
+</script>
 </body>
 </html>
