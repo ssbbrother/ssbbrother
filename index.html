@@ -249,7 +249,50 @@
             </div>
         </div>
     </div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    const firebaseConfig = {
+        apiKey: "AIzaSyAwXH8HT4XRdbPG4HVE1aiAonH6MoDwOSM",
+        authDomain: "ssb-delivery-ad6d5.firebaseapp.com",
+        projectId: "ssb-delivery-ad6d5",
+        storageBucket: "ssb-delivery-ad6d5.firebasestorage.app",
+        messagingSenderId: "1002588946582",
+        appId: "1:1002588946582:web:193deabf5ec9e3e50b02b7",
+        measurementId: "G-NMWRY0GQH7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function syncFirebaseToWebsite() {
+        try {
+            
+            
+            const querySnapshot = await getDocs(collection(db, "products"));
+            let liveProducts = [];
+            
+            querySnapshot.forEach((doc) => {
+                liveProducts.push(doc.data());
+            });
+
+            if(liveProducts.length > 0) {
+                
+                localStorage.setItem('ssb_products', JSON.stringify(liveProducts));
+
+            
+                if(typeof window.renderCategoryButtons === 'function') window.renderCategoryButtons();
+                if(typeof window.filterAndDisplayProducts === 'function') window.filterAndDisplayProducts();
+            }
+        } catch (error) {
+            console.error("Firebase बाट सामान ल्याउन समस्या भयो:", error);
+        }
+    }
+
+    
+    syncFirebaseToWebsite();
+</script>
     <script>
         const defaultProducts = [
             { sku: 'SSB-ZUB-101', company: 'Zubara', name: 'Zubara M40 Diaper', images: ['https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80'], stock: 5000, t1p: 1200, t2q: 11, t2p: 1100, t3q: 35, t3p: 950, desc: 'Premium baby diapers.', packQty: 1, offerType: 'none', offerX: 0, offerY: 0 },
