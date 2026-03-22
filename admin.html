@@ -539,7 +539,6 @@ window.openDetailModal = function(type) {
     }, 2500);
 </script>
 <script>
-    // १. पासवर्ड देखाउने/लुकाउने फङ्सन
     function togglePasswordVisibility() {
         const pwdInput = document.getElementById('admin-pass'); 
         const eyeIcon = document.getElementById('eye-icon');
@@ -554,33 +553,43 @@ window.openDetailModal = function(type) {
             eyeIcon.classList.add('fa-eye');
         }
     }
+</script>
 
-    // २. Forgot Password को फङ्सन
-    function handleForgotPassword() {
-        // 💡 ध्यान दिनुहोला: मैले इमेल हाल्ने बाकसको नाम 'admin-email' राखेको छु। 
-        // यदि तपाईंको कोडमा इमेलको ID फरक छ भने, यहाँ सच्याउनुहोला!
+<script type="module">
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    window.handleForgotPassword = function() {
+        // 💡 तपाईंको इमेल हाल्ने बाकसको ID 'admin-email' हो भनेर पक्का गर्नुहोला है!
         const emailInputEl = document.getElementById('admin-email'); 
         
         if (!emailInputEl || !emailInputEl.value) {
-            alert("⚠️ कृपया पहिला माथिको बाकसमा आफ्नो इमेल (Email) लेख्नुहोस्, अनि मात्र 'Forgot Password' मा थिच्नुहोस्!");
+            alert("⚠️ कृपया पहिला माथिको बाकसमा आफ्नो इमेल (Email) लेख्नुहोस्!");
             return;
         }
 
         const emailValue = emailInputEl.value;
-
-        // Firebase बाट पासवर्ड रिसेट गर्ने लिङ्क पठाउने
-        if (window.auth && window.sendPasswordResetEmail) {
-            window.sendPasswordResetEmail(window.auth, emailValue)
+        
+        try {
+            const auth = getAuth(); // सिस्टमको सुरक्षित कनेक्सन तान्ने
+            sendPasswordResetEmail(auth, emailValue)
                 .then(() => {
-                    alert("✅ पासवर्ड रिसेट गर्ने लिङ्क तपाईंको इमेल (" + emailValue + ") मा पठाइएको छ। कृपया आफ्नो इमेल चेक गरेर नयाँ पासवर्ड राख्नुहोस्!");
+                    alert("✅ लिङ्क पठाइयो! कृपया आफ्नो इमेल (" + emailValue + ") को Inbox (वा Spam) फोल्डर चेक गर्नुहोस्।");
                 })
                 .catch((error) => {
-                    alert("❌ एरर: " + error.message);
+                    if(error.code === 'auth/user-not-found') {
+                        alert("❌ यो इमेल हाम्रो सिस्टममा दर्ता छैन!");
+                    } else if(error.code === 'auth/invalid-email') {
+                        alert("❌ इमेल लेखेको तरिका मिलेन!");
+                    } else {
+                        alert("❌ एरर: " + error.message);
+                    }
                 });
-        } else {
-            alert("पासवर्ड रिसेट सिस्टम जोडिएको छैन वा इमेल गलत छ!");
+        } catch(e) {
+            alert("Firebase पूर्ण रूपमा लोड भएको छैन, कृपया एकपटक पेज रिफ्रेस गर्नुहोस्।");
         }
-    }
+    };
+</script>
+   
 </script>
 </body>
 </html>
