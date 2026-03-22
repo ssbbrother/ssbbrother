@@ -272,13 +272,20 @@
             });
             
             // Settings (Video)
-            onSnapshot(doc(db, "settings", "main"), (doc) => {
-                if(doc.exists() && doc.data().videoUrl) {
-                    document.getElementById('admin-video-preview').src = doc.data().videoUrl;
-                    document.getElementById('video-url-input').value = doc.data().videoUrl;
-                }
-            });
+onSnapshot(doc(db, "settings", "main"), (docSnap) => {
+    if(docSnap.exists() && docSnap.data().videoUrl) {
+        
+        let previewEl = document.getElementById('admin-video-preview');
+        let inputEl = document.getElementById('video-url-input');
+        
+        if (previewEl) {
+            previewEl.src = docSnap.data().videoUrl;
         }
+        if (inputEl) {
+            inputEl.value = docSnap.data().videoUrl;
+        }
+    }
+});
 
         // 🌟 3. PRODUCT MANAGEMENT (CRUD) 🌟
         window.openAddProductModal = function(isEditing = false, id = null) {
