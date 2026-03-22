@@ -31,12 +31,25 @@
         
         <form onsubmit="handleAuth(event)" class="flex flex-col gap-4 mt-4">
             <input type="email" id="admin-email" placeholder="Admin Email" required class="glass-input w-full py-3 px-4 rounded-xl text-sm">
-            <input type="password" id="admin-pass" placeholder="Password" required class="glass-input w-full py-3 px-4 rounded-xl text-sm">
-            <p id="error-msg" class="text-red-400 text-xs hidden font-bold"></p>
-            <button type="submit" id="auth-btn" class="w-full bg-gradient-to-r from-[#00f2fe] to-blue-600 text-white font-bold py-3 rounded-xl mt-2 hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,242,254,0.4)]">Secure Login</button>
-        </form>
-        <p class="text-xs text-gray-400 mt-4 cursor-pointer hover:text-white" onclick="toggleAuthMode()">First time? <span class="text-[#00f2fe] font-bold">Create Admin Account</span></p>
-    </div>
+            <div class="relative w-full mb-1">
+            <input type="password" id="admin-pass" placeholder="Password" required class="glass-input w-full py-3 px-4 rounded-xl text-sm pr-10">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-3.5 text-gray-400 hover:text-[#00f2fe] transition-colors">
+                <i id="eye-icon" class="fas fa-eye"></i>
+            </button>
+        </div>
+
+        <div class="flex justify-end w-full mb-3">
+            <button type="button" onclick="handleForgotPassword()" class="text-xs text-[#00f2fe] hover:text-white transition-colors font-bold">
+                Forgot Password?
+            </button>
+        </div>
+
+        <p id="error-msg" class="text-red-400 text-xs hidden font-bold"></p>
+        <button type="submit" id="auth-btn" class="w-full bg-gradient-to-r from-[#00f2fe] to-blue-600 text-white font-bold py-3 rounded-xl mt-2 hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,242,254,0.4)]">Secure Login</button>
+    </form>
+    
+    <p class="text-xs text-gray-400 mt-4 cursor-pointer hover:text-white" onclick="toggleAuthMode()">First time? <span class="text-[#00f2fe] font-bold">Create Admin Account</span></p>
+</div>
 
     <div id="admin-dashboard" class="w-full hidden h-full p-4 flex-col md:flex-row gap-6 max-w-[1800px] mx-auto">
         <nav class="glass-panel w-64 p-6 hidden md:flex flex-col gap-3 shrink-0 h-full">
@@ -524,6 +537,50 @@ window.openDetailModal = function(type) {
             window.updateDashboardCharts();
         }
     }, 2500);
+</script>
+<script>
+    // १. पासवर्ड देखाउने/लुकाउने फङ्सन
+    function togglePasswordVisibility() {
+        const pwdInput = document.getElementById('admin-pass'); 
+        const eyeIcon = document.getElementById('eye-icon');
+        
+        if (pwdInput.type === 'password') {
+            pwdInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            pwdInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+
+    // २. Forgot Password को फङ्सन
+    function handleForgotPassword() {
+        // 💡 ध्यान दिनुहोला: मैले इमेल हाल्ने बाकसको नाम 'admin-email' राखेको छु। 
+        // यदि तपाईंको कोडमा इमेलको ID फरक छ भने, यहाँ सच्याउनुहोला!
+        const emailInputEl = document.getElementById('admin-email'); 
+        
+        if (!emailInputEl || !emailInputEl.value) {
+            alert("⚠️ कृपया पहिला माथिको बाकसमा आफ्नो इमेल (Email) लेख्नुहोस्, अनि मात्र 'Forgot Password' मा थिच्नुहोस्!");
+            return;
+        }
+
+        const emailValue = emailInputEl.value;
+
+        // Firebase बाट पासवर्ड रिसेट गर्ने लिङ्क पठाउने
+        if (window.auth && window.sendPasswordResetEmail) {
+            window.sendPasswordResetEmail(window.auth, emailValue)
+                .then(() => {
+                    alert("✅ पासवर्ड रिसेट गर्ने लिङ्क तपाईंको इमेल (" + emailValue + ") मा पठाइएको छ। कृपया आफ्नो इमेल चेक गरेर नयाँ पासवर्ड राख्नुहोस्!");
+                })
+                .catch((error) => {
+                    alert("❌ एरर: " + error.message);
+                });
+        } else {
+            alert("पासवर्ड रिसेट सिस्टम जोडिएको छैन वा इमेल गलत छ!");
+        }
+    }
 </script>
 </body>
 </html>
