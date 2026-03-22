@@ -82,15 +82,26 @@
             </div>
         </section>
 
-        <section class="py-20 relative z-10 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-transparent">
-            <div class="max-w-7xl mx-auto px-4"><div class="text-center mb-10"><h2 class="text-3xl font-black text-dynamic uppercase tracking-widest">Proud to announce with you</h2><div class="w-24 h-1.5 bg-gradient-to-r from-ssbBlue to-ssbGreen mx-auto rounded-full mt-4"></div></div><div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-black relative"><video src="ssb.mp4" controls autoplay muted loop playsinline class="w-full h-auto aspect-video object-cover opacity-90 hover:opacity-100 transition-opacity admin-managed-video"><iframe class="w-full h-full min-h-[400px] object-cover rounded-lg shadow-lg" 
-    src="https://www.youtube.com/embed/sNOXvUZnpSGAh1me?autoplay=1&mute=1&loop=1" 
-    title="YouTube video player" 
-    frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-    allowfullscreen>
-</iframe>SSB BROTHER</div></div></div>
-        </section>
+       <section class="py-20 relative z-10 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-transparent">
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-black text-dynamic uppercase tracking-widest">Proud to announce with you</h2>
+            <div class="w-24 h-1.5 bg-gradient-to-r from-ssbBlue to-ssbGreen mx-auto rounded-full mt-4"></div>
+        </div>
+        
+        <div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-black relative aspect-video">
+            <iframe id="live-promo-video" class="w-full h-full object-cover" 
+                src="https://www.youtube.com/embed/sNOXvUZnpSGAh1me?autoplay=1&mute=1&loop=1" 
+                title="SSB Promo Video" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+
+    </div>
+</section>
 
         <section id="brands" class="py-20 relative z-10 border-t border-gray-200 dark:border-white/10">
             <div class="max-w-[1400px] mx-auto px-4">
@@ -453,6 +464,39 @@
             qrBox.classList.add('hidden');
         }
     };
+</script>
+<script type="module">
+    import { getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    setTimeout(async () => {
+        try {
+            
+            const db = getFirestore(getApp());
+            const docSnap = await getDoc(doc(db, "settings", "main"));
+            
+            if (docSnap.exists() && docSnap.data().videoUrl) {
+                let vUrl = docSnap.data().videoUrl;
+                
+                // यदि एडमिनले युट्युबको नर्मल लिङ्क (watch?v=...) हाल्यो भने, त्यसलाई वेबसाइटमा प्ले हुने (Embed) लिङ्कमा आफैं बदल्ने
+                if(vUrl.includes('watch?v=')) {
+                    let vId = vUrl.split('v=')[1].split('&')[0];
+                    vUrl = `https://www.youtube.com/embed/${vId}?autoplay=1&mute=1&loop=1`;
+                } else if(vUrl.includes('youtu.be/')) {
+                    let vId = vUrl.split('youtu.be/')[1].split('?')[0];
+                    vUrl = `https://www.youtube.com/embed/${vId}?autoplay=1&mute=1&loop=1`;
+                }
+                
+                
+                let videoFrame = document.getElementById('live-promo-video');
+                if(videoFrame) {
+                    videoFrame.src = vUrl;
+                }
+            }
+        } catch (e) {
+            console.log("भिडियो तान्न सकिएन:", e);
+        }
+    }, 1500); // वेबसाइट खुलेको १.५ सेकेन्डपछि डाटा तान्ने
 </script>
 </body>
 </html>
