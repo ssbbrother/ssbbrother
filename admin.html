@@ -412,18 +412,25 @@ window.openDetailModal = function(type) {
     }
 };
     </script>
-    <script>
-    async function updateCustomCharts() {
+   <script>
+    // तपाईंको सिस्टमले ठ्याक्कै यही नाम खोजिरहेको छ!
+    window.updateDashboardCharts = async function(passedOrders) {
         try {
-            
-            const querySnapshot = await window.getDocs(window.collection(window.db, "orders"));
-            
             let orders = [];
-            querySnapshot.forEach((doc) => {
-                orders.push(doc.data());
-            });
 
-            if(orders.length === 0) return; 
+            // यदि सिस्टमले आफैं अर्डर पठाएको छ भने त्यो लिने, नत्र गुगलबाट तान्ने
+            if (passedOrders && Array.isArray(passedOrders)) {
+                orders = passedOrders;
+            } else if (window.db && window.getDocs && window.collection) {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "orders"));
+                querySnapshot.forEach((doc) => {
+                    orders.push(doc.data());
+                });
+            } else {
+                return; // डाटाबेस तयार छैन भने केही नगर्ने
+            }
+
+            if(orders.length === 0) return;
 
             // ==========================================
             // १. गोलो चार्ट (Live Order Status) को हिसाब
@@ -435,21 +442,23 @@ window.openDetailModal = function(type) {
                 if (status === 'pending') pending++;
                 else if (status === 'completed' || status === 'delivered') completed++;
                 else if (status === 'cancelled') cancelled++;
-                else pending++; // केही नभए pending मान्ने
+                else pending++; 
             });
 
             let totalStatus = pending + completed + cancelled;
             if(totalStatus > 0) {
                 let pPct = Math.round((pending / totalStatus) * 100);
                 let cPct = Math.round((completed / totalStatus) * 100);
-                let cxPct = Math.round((cancelled / totalStatus) * 100); // cx = cancelled
+                let cxPct = Math.round((cancelled / totalStatus) * 100);
 
-                
-                document.getElementById('pie-txt-pending').innerText = pPct + '%';
-                document.getElementById('pie-txt-completed').innerText = cPct + '%';
-                document.getElementById('pie-txt-cancelled').innerText = cxPct + '%';
+                let pTxt = document.getElementById('pie-txt-pending');
+                let cTxt = document.getElementById('pie-txt-completed');
+                let cxTxt = document.getElementById('pie-txt-cancelled');
 
-                
+                if(pTxt) pTxt.innerText = pPct + '%';
+                if(cTxt) cTxt.innerText = cPct + '%';
+                if(cxTxt) cxTxt.innerText = cxPct + '%';
+
                 let pieElement = document.getElementById('dynamic-pie-chart');
                 if(pieElement) {
                     pieElement.style.background = `conic-gradient(
@@ -465,21 +474,18 @@ window.openDetailModal = function(type) {
             // ==========================================
             let brandSales = {};
 
-            
             orders.forEach(order => {
                 let items = order.cart || order.items || [];
                 items.forEach(item => {
-                    let brand = item.company || 'Other'; // 'company' भनेको Zubara, Evora आदि
+                    let brand = item.company || 'Other';
                     let qty = parseInt(item.quantity || item.qty || 1);
                     brandSales[brand] = (brandSales[brand] || 0) + qty;
                 });
             });
 
-            
             let sortedBrands = Object.entries(brandSales).sort((a, b) => b[1] - a[1]).slice(0, 5);
             let maxSale = sortedBrands.length > 0 ? sortedBrands[0][1] : 1; 
 
-            
             for (let i = 1; i <= 5; i++) {
                 let valEl = document.getElementById(`bar-val-${i}`);
                 let labelEl = document.getElementById(`bar-label-${i}`);
@@ -494,7 +500,6 @@ window.openDetailModal = function(type) {
                     if(labelEl) labelEl.innerText = brandName.substring(0, 8); 
                     if(fillEl) fillEl.style.height = heightPct + '%';
                 } else {
-                    
                     if(valEl) valEl.innerText = '0';
                     if(labelEl) labelEl.innerText = '...';
                     if(fillEl) fillEl.style.height = '10%';
@@ -504,14 +509,14 @@ window.openDetailModal = function(type) {
         } catch (error) {
             console.error("चार्ट अपडेट गर्दा एरर आयो:", error);
         }
-    }
-
+    };
     
+    // ब्याकअपको लागि: सुरुमा एकपटक आफैं चलाउने
     setTimeout(() => {
-        if(window.db) {
-            updateCustomCharts();
+        if(typeof window.updateDashboardCharts === 'function') {
+            window.updateDashboardCharts();
         }
-    }, 2000);
+    }, 2500);
 </script>
 </body>
 </html>
