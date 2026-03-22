@@ -174,7 +174,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword,SendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // YOUR EXACT FIREBASE CONFIG
         const firebaseConfig = {
@@ -555,41 +555,34 @@ window.openDetailModal = function(type) {
     }
 </script>
 
-<script type="module">
-    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+// 🔥 Forgot Password Magic Code (Connected to Main Auth) 🔥
+window.handleForgotPassword = function() {
+    // 💡 Make sure your email input box ID is exactly 'admin-email'!
+    const emailInputEl = document.getElementById('admin-email'); 
+    
+    if (!emailInputEl || !emailInputEl.value) {
+        alert("⚠️ Please enter your email address in the box above first!");
+        return;
+    }
 
-    window.handleForgotPassword = function() {
-        // 💡 तपाईंको इमेल हाल्ने बाकसको ID 'admin-email' हो भनेर पक्का गर्नुहोला है!
-        const emailInputEl = document.getElementById('admin-email'); 
-        
-        if (!emailInputEl || !emailInputEl.value) {
-            alert("⚠️ कृपया पहिला माथिको बाकसमा आफ्नो इमेल (Email) लेख्नुहोस्!");
-            return;
-        }
-
-        const emailValue = emailInputEl.value;
-        
-        try {
-            const auth = getAuth(); // सिस्टमको सुरक्षित कनेक्सन तान्ने
-            sendPasswordResetEmail(auth, emailValue)
-                .then(() => {
-                    alert("✅ लिङ्क पठाइयो! कृपया आफ्नो इमेल (" + emailValue + ") को Inbox (वा Spam) फोल्डर चेक गर्नुहोस्।");
-                })
-                .catch((error) => {
-                    if(error.code === 'auth/user-not-found') {
-                        alert("❌ यो इमेल हाम्रो सिस्टममा दर्ता छैन!");
-                    } else if(error.code === 'auth/invalid-email') {
-                        alert("❌ इमेल लेखेको तरिका मिलेन!");
-                    } else {
-                        alert("❌ एरर: " + error.message);
-                    }
-                });
-        } catch(e) {
-            alert("Firebase पूर्ण रूपमा लोड भएको छैन, कृपया एकपटक पेज रिफ्रेस गर्नुहोस्।");
-        }
-    };
+    const emailValue = emailInputEl.value;
+    const currentAuth = getAuth(); // Fetch your secure Firebase Auth connection
+    
+    sendPasswordResetEmail(currentAuth, emailValue)
+        .then(() => {
+            alert("✅ Reset link sent! Please check the Inbox or Spam folder for (" + emailValue + ") to set your new password.");
+        })
+        .catch((error) => {
+            if(error.code === 'auth/user-not-found') {
+                alert("❌ This email is not registered in our system!");
+            } else if(error.code === 'auth/invalid-email') {
+                alert("❌ Invalid email format! Please check for typos.");
+            } else {
+                alert("❌ Error: " + error.message);
+            }
+        });
+};
 </script>
-   
 </script>
 </body>
 </html>
